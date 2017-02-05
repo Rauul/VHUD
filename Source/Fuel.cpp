@@ -14,3 +14,8 @@ Fuel::Fuel(float posX, float posY, int width, int height, D3DCOLOR bgColor, D3DC
 	boarderColor = brdColor;
 	useBoarder = useBrd;
 }
+
+void Fuel::Update(const TelemInfoV01& info)
+{
+	quantity = info.mFuel;
+}

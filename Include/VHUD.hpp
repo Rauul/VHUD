@@ -5,12 +5,15 @@
 #include "Fuel.hpp"
 #include <d3dx9.h>
 
+#define PLUGIN_NAME             "rF2_V-HUD"
+#define PLUGIN_VERSION			"0.1"
 
 #if _WIN64
 #define LOG_FILE				"Bin64\\Plugins\\RelativeTime.log"
 #define CONFIG_FILE				"Bin64\\Plugins\\RelativeTime.ini"
 #define TEXTURE_BACKGROUND		"Bin64\\Plugins\\RelativeTimeBackground.png"
 #define MOUSE_TEXTURE			"Bin64\\Plugins\\RelativeTimeCursor.png"
+#define FUEL_ICON				"Bin64\\Plugins\\VHUD\\Icons\\Fuel.png"
 #else
 #define LOG_FILE				"Bin32\\Plugins\\RelativeTime.log"
 #define CONFIG_FILE				"Bin32\\Plugins\\RelativeTime.ini"
@@ -18,6 +21,9 @@
 #define MOUSE_TEXTURE			"Bin32\\Plugins\\RelativeTimeCursor.png"
 #endif
 
+#define ARIAL						"Arial"
+#define TAHOMA						"Tahoma"
+#define BIG_FONT_SIZE				40
 
 class VHUD : public InternalsPluginV06
 {
@@ -76,14 +82,24 @@ public:
 
 	// USER FUNCTIONS
 	void DrawBox(float posX, float posY, int width, int height, D3DCOLOR backgroundColor, D3DCOLOR boarderColor, bool useBoarder);
+	void DrawIcon(float posX, float posY, int width, int height, D3DCOLOR color);
+	void DrawDText(double value, float posX, float posY, int width, int height, int align, D3DCOLOR color);
 	void UpdateFuel(const TelemInfoV01& tinfo, const ScoringInfoV01& sinfo);
 	bool NewLapStarted(const TelemInfoV01& tinfo, const ScoringInfoV01& sinfo);
 
 	// USER VARIABELS
 	bool inRealtime = false;
-	
-	LPD3DXSPRITE sprite = NULL;
-	LPDIRECT3DTEXTURE9 texture = NULL;
+
+	LPD3DXFONT big_Font = NULL;
+	D3DXFONT_DESC BigFontDesc = {
+		BIG_FONT_SIZE, 0, 1000, 0, false, DEFAULT_CHARSET,
+		OUT_TT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH, TAHOMA
+	};
+
+	LPD3DXSPRITE boxSprite = NULL;
+	LPDIRECT3DTEXTURE9 boxTexture = NULL;
+	LPD3DXSPRITE fuelIconSprite = NULL;
+	LPDIRECT3DTEXTURE9 fuelIconTexture = NULL;
 
 private:
 

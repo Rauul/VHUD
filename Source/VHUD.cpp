@@ -41,7 +41,7 @@ extern "C" __declspec( dllexport )
 void __cdecl DestroyPluginObject( PluginObject *obj )  { delete( (VHUD *) obj ); }
 
 
-Fuel fuelWidget(200, 200, 200, 200, 0xFF000000, 0xFFAAAAAA, true);
+Fuel fuelWidget(200, 200, 218, 65, 0xFF000000, 0xFFAAAAAA, true);
 
 
 struct Player
@@ -55,7 +55,11 @@ struct Player
 }player;
 
 
+
+
+//
 // VHUD class
+//
 
 void VHUD::Startup(long version)
 {
@@ -91,24 +95,40 @@ void VHUD::ExitRealtime()
 
 void VHUD::UpdateTelemetry( const TelemInfoV01& info )
 {
+	fuelWidget.Update(info);
 }
 
 
 void VHUD::InitScreen(const ScreenInfoV01& info)
 {
-	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, TEXTURE_BACKGROUND, &texture);
-	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &sprite);
+	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, TEXTURE_BACKGROUND, &boxTexture);
+	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &boxSprite);
+	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, FUEL_ICON, &fuelIconTexture);
+	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &fuelIconSprite);
+	D3DXCreateFontIndirect((LPDIRECT3DDEVICE9)info.mDevice, &BigFontDesc, &big_Font);
 }
 
 void VHUD::UninitScreen(const ScreenInfoV01& info)
 {
-	if (texture) {
-		texture->Release();
-		texture = NULL;
+	if (boxTexture) {
+		boxTexture->Release();
+		boxTexture = NULL;
 	}
-	if (sprite) {
-		sprite->Release();
-		sprite = NULL;
+	if (boxSprite) {
+		boxSprite->Release();
+		boxSprite = NULL;
+	}
+	if (fuelIconTexture) {
+		fuelIconTexture->Release();
+		fuelIconTexture = NULL;
+	}
+	if (fuelIconSprite) {
+		fuelIconSprite->Release();
+		fuelIconSprite = NULL;
+	}
+	if (big_Font) {
+		big_Font->Release();
+		big_Font = NULL;
 	}
 }
 
@@ -122,14 +142,22 @@ void VHUD::RenderScreenBeforeOverlays(const ScreenInfoV01& info)
 
 void VHUD::PreReset(const ScreenInfoV01& info)
 {
-	if (sprite)
-		sprite->OnLostDevice();
+	if (boxSprite)
+		boxSprite->OnLostDevice();
+	if (fuelIconSprite)
+		fuelIconSprite->OnLostDevice();
+	if (big_Font)
+		big_Font->OnLostDevice();
 }
 
 void VHUD::PostReset(const ScreenInfoV01& info)
 {
-	if (sprite)
-		sprite->OnResetDevice();
+	if (boxSprite)
+		boxSprite->OnResetDevice();
+	if (fuelIconSprite)
+		fuelIconSprite->OnResetDevice();
+	if (big_Font)
+		big_Font->OnResetDevice();
 }
 
 void VHUD::DrawGraphics(const ScreenInfoV01& info)
@@ -137,15 +165,17 @@ void VHUD::DrawGraphics(const ScreenInfoV01& info)
 	LPDIRECT3DDEVICE9 d3d = (LPDIRECT3DDEVICE9)info.mDevice;
 
 	DrawBox(fuelWidget.position.x, fuelWidget.position.y, fuelWidget.size.right, fuelWidget.size.bottom, fuelWidget.backgroundColor, fuelWidget.boarderColor, fuelWidget.useBoarder);
+	DrawIcon(fuelWidget.position.x, fuelWidget.position.y, 64, 64, 0xFFFFFFFF);
+	DrawDText(fuelWidget.quantity, fuelWidget.position.x, fuelWidget.position.y, fuelWidget.size.right, fuelWidget.size.bottom, DT_CENTER, 0xFFFFFFFF);
 }
 
 void VHUD::DrawBox(float posX, float posY, int width, int height, D3DCOLOR backgroundColor, D3DCOLOR boarderColor, bool useBoarder)
 {
 	RECT size = { 0, 0, width, height };
 	D3DXVECTOR3 position = { posX, posY, 0 };
-	sprite->Begin(D3DXSPRITE_ALPHABLEND);
-	sprite->Draw(texture, &size, NULL, &position, backgroundColor);
-	sprite->End();
+	boxSprite->Begin(D3DXSPRITE_ALPHABLEND);
+	boxSprite->Draw(boxTexture, &size, NULL, &position, backgroundColor);
+	boxSprite->End();
 
 	if (useBoarder)
 	{
@@ -153,31 +183,55 @@ void VHUD::DrawBox(float posX, float posY, int width, int height, D3DCOLOR backg
 		D3DXVECTOR3 borderPosition = position;
 
 		// Top
-		sprite->Begin(D3DXSPRITE_ALPHABLEND);
+		boxSprite->Begin(D3DXSPRITE_ALPHABLEND);
 		borderSize.bottom = 1;
-		sprite->Draw(texture, &borderSize, NULL, &borderPosition, boarderColor);
-		sprite->End();
+		boxSprite->Draw(boxTexture, &borderSize, NULL, &borderPosition, boarderColor);
+		boxSprite->End();
 
 		// Bottom
-		sprite->Begin(D3DXSPRITE_ALPHABLEND);
+		boxSprite->Begin(D3DXSPRITE_ALPHABLEND);
 		borderPosition.y += height - 1;
-		sprite->Draw(texture, &borderSize, NULL, &borderPosition, boarderColor);
-		sprite->End();
+		boxSprite->Draw(boxTexture, &borderSize, NULL, &borderPosition, boarderColor);
+		boxSprite->End();
 
 		// Left
-		sprite->Begin(D3DXSPRITE_ALPHABLEND);
+		boxSprite->Begin(D3DXSPRITE_ALPHABLEND);
 		borderSize.right = 1;
 		borderSize.bottom = height - 2;
 		borderPosition.y = posY + 1;
-		sprite->Draw(texture, &borderSize, NULL, &borderPosition, boarderColor);
-		sprite->End();
+		boxSprite->Draw(boxTexture, &borderSize, NULL, &borderPosition, boarderColor);
+		boxSprite->End();
 
 		// Right
-		sprite->Begin(D3DXSPRITE_ALPHABLEND);
+		boxSprite->Begin(D3DXSPRITE_ALPHABLEND);
 		borderPosition.x += width - 1;
-		sprite->Draw(texture, &borderSize, NULL, &borderPosition, boarderColor);
-		sprite->End();
+		boxSprite->Draw(boxTexture, &borderSize, NULL, &borderPosition, boarderColor);
+		boxSprite->End();
 	}
+}
+
+void VHUD::DrawIcon(float posX, float posY, int width, int height, D3DCOLOR color)
+{
+	RECT size = { 0, 0, width, height };
+	D3DXVECTOR3 position = { posX, posY, 0 };
+
+	fuelIconSprite->Begin(D3DXSPRITE_ALPHABLEND);
+	fuelIconSprite->Draw(fuelIconTexture, &size, NULL, &position, color);
+	fuelIconSprite->End();
+}
+
+void VHUD::DrawDText(double value, float posX, float posY, int width, int height, int align, D3DCOLOR color)
+{
+	RECT position;
+	position.left = posX;
+	position.top = posY;
+	position.right = posX + width;
+	position.bottom = posY + height;
+
+	char text[64] = "";
+
+	sprintf(text, "%.2f", value);
+	big_Font->DrawText(NULL, text, -1, &position, align, color);
 }
 
 void VHUD::UpdateFuel(const TelemInfoV01& tinfo, const ScoringInfoV01& sinfo)
