@@ -42,6 +42,7 @@ void __cdecl DestroyPluginObject( PluginObject *obj )  { delete( (VHUD *) obj );
 
 
 Fuel fuelWidget(1);
+Menu menu(1);
 
 
 struct Player
@@ -53,8 +54,6 @@ struct Player
 	double lastLapStartET;
 	double lapTimes[5];
 }player;
-
-
 
 
 //
@@ -84,6 +83,7 @@ void VHUD::EndSession()
 void VHUD::EnterRealtime()
 {
 	inRealtime = true;
+	fuelWidget.firstUpdate = true;
 }
 
 
@@ -102,11 +102,13 @@ void VHUD::UpdateTelemetry( const TelemInfoV01& info )
 void VHUD::InitScreen(const ScreenInfoV01& info)
 {
 	fuelWidget.Init(info);
+	menu.Init(info);
 }
 
 void VHUD::UninitScreen(const ScreenInfoV01& info)
 {
-	fuelWidget.Uninit(info);	
+	fuelWidget.Uninit(info);
+	menu.Uninit(info);
 }
 
 void VHUD::RenderScreenBeforeOverlays(const ScreenInfoV01& info)
@@ -120,28 +122,30 @@ void VHUD::RenderScreenBeforeOverlays(const ScreenInfoV01& info)
 void VHUD::PreReset(const ScreenInfoV01& info)
 {
 	fuelWidget.PreReset(info);
+	menu.PreReset(info);
 }
 
 void VHUD::PostReset(const ScreenInfoV01& info)
 {
 	fuelWidget.PostReset(info);
+	menu.PostReset(info);
 }
 
 void VHUD::DrawGraphics(const ScreenInfoV01& info)
 {
 	LPDIRECT3DDEVICE9 d3d = (LPDIRECT3DDEVICE9)info.mDevice;
 
+	menu.Draw();
 	fuelWidget.Draw();
 }
 
-bool VHUD::NewLapStarted(const TelemInfoV01& tinfo, const ScoringInfoV01& sinfo)
+bool VHUD::NewLapStarted(const TelemInfoV01& info)
 {
-	if (tinfo.mLapStartET > player.lastLapStartET)
+	if (info.mLapStartET > player.lastLapStartET)
 		return true;
 
 	return false;
 }
-
 
 void VHUD::UpdateScoring( const ScoringInfoV01& info )
 {

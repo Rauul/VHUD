@@ -3,6 +3,7 @@
 
 #include "InternalsPlugin.hpp"
 #include "Fuel.hpp"
+#include "Menu.hpp"
 #include <d3dx9.h>
 
 #define PLUGIN_NAME             "rF2_V-HUD"
@@ -75,24 +76,14 @@ public:
 	void PostReset(const ScreenInfoV01& info);					 // after resetting
 
 
-	// USER CLASSES
 	
 
 	// USER FUNCTIONS
-	bool NewLapStarted(const TelemInfoV01& tinfo, const ScoringInfoV01& sinfo);
+	bool NewLapStarted(const TelemInfoV01& info);
 
 	// USER VARIABELS
 	bool inRealtime = false;
-
-	LPD3DXFONT big_Font = NULL;
-	D3DXFONT_DESC BigFontDesc = {
-		BIG_FONT_SIZE, 0, 1000, 0, false, DEFAULT_CHARSET,
-		OUT_TT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH, TAHOMA
-	};
-
-	
-	LPD3DXSPRITE fuelIconSprite = NULL;
-	LPDIRECT3DTEXTURE9 fuelIconTexture = NULL;
+	bool inEditMode = false;
 
 private:
 

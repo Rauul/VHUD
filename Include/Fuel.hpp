@@ -13,23 +13,23 @@
 
 #define TAHOMA						"Tahoma"
 #define BIG_FONT_SIZE				40
-#define SMALL_FONT_SIZE				18
+#define SMALL_FONT_SIZE				17
 
 class Fuel
 {
 public:
+	Fuel(int x);
 	void Init(const ScreenInfoV01& info);
 	void Uninit(const ScreenInfoV01& info);
 	void PreReset(const ScreenInfoV01& info);
 	void PostReset(const ScreenInfoV01& info);
 	void Update(const TelemInfoV01& info);
+	bool NewLapStarted(const TelemInfoV01& info);
 	void Draw();
 	void DrawBox();
 	void DrawIcon();
 	void DrawTxt();
-
-	Fuel(int x);
-
+	
 	RECT size;
 	D3DXVECTOR3 position;
 	D3DCOLOR backgroundColor, boarderColor;
@@ -42,8 +42,12 @@ public:
 	LPD3DXSPRITE boxSprite = NULL;
 	LPDIRECT3DTEXTURE9 boxTexture = NULL;
 	double quantity = 0.00;
-	double usedPerLap[3];
+	double quantityLastLap = 0.00;
+	double usedPerLap[3] = { 0, 0, 0 };
 	double lapTime[3];
+	double lastLapStartET = 0.00;
+	double lapQuantity = 0.00;
+	bool firstUpdate = true;
 	bool useBoarder;
 	bool enabled = true;
 

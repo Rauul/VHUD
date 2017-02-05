@@ -5,11 +5,11 @@
 Fuel::Fuel(int x)
 {
 	position.x = 200;
-	position.y = 200;
+	position.y = 600;
 	position.z = 0;
 	size.left = 0;
 	size.top = 0;
-	size.right = 218;
+	size.right = 171;
 	size.bottom = 65;
 	backgroundColor = 0xFF000000;
 	boarderColor = 0xFFAAAAAA;
@@ -81,6 +81,40 @@ void Fuel::PostReset(const ScreenInfoV01 & info)
 void Fuel::Update(const TelemInfoV01& info)
 {
 	quantity = info.mFuel;
+
+	if (firstUpdate)
+	{
+		quantityLastLap = quantity;
+		firstUpdate = false;
+	}
+
+	if (NewLapStarted(info))
+	{
+		if (quantityLastLap > quantity)
+		{
+			for (int i = 2; i > 0; i--)
+			{
+				usedPerLap[i] = usedPerLap[i - 1];
+			}
+		usedPerLap[0] = quantityLastLap - quantity;
+		}
+		quantityLastLap = quantity;
+		lastLapStartET = info.mLapStartET;
+	}
+
+	if (usedPerLap[0] > 0 && usedPerLap[1] > 0 && usedPerLap[2] > 0)
+	{
+		double avgFuelConsumption = (usedPerLap[0] + usedPerLap[1] + usedPerLap[2]) / 3;
+		lapQuantity = quantity / avgFuelConsumption;
+	}
+}
+
+bool Fuel::NewLapStarted(const TelemInfoV01 & info)
+{
+	if (info.mLapStartET != lastLapStartET)
+		return true;
+
+	return false;
 }
 
 void Fuel::Draw()
@@ -134,12 +168,11 @@ void Fuel::DrawBox()
 
 void Fuel::DrawIcon()
 {
-	RECT sizee = { 0, 0, 64, 64 };
-	D3DXVECTOR3 pos = { 200, 200, 0 };
+	RECT size = { 0, 0, 64, 64 };
 	D3DCOLOR color = 0xFFFFFFFF;
 
 	iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
-	iconSprite->Draw(iconTexture, &sizee, NULL, &pos, color);
+	iconSprite->Draw(iconTexture, &size, NULL, &position, color);
 	iconSprite->End();
 }
 
@@ -147,18 +180,18 @@ void Fuel::DrawTxt()
 {
 	D3DCOLOR color = 0xFFFFFFFF;
 	RECT pos;
-	pos.left = position.x + 64;
-	pos.top = position.y + 4;
-	pos.right = pos.left + 154;
+	pos.left = position.x + 50;
+	pos.top = position.y + 2;
+	pos.right = pos.left + 121;
 	pos.bottom = pos.top + 36;
 	char text[32] = "";
 
 	sprintf(text, "%.2f", quantity);
 	bigFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
 
-	pos.top += 36;
+	pos.top += 40;
 	pos.bottom = pos.top + 24;
 
-	sprintf(text, "%.2f", 2.61);
+	sprintf(text, "%.2f | %.1f", usedPerLap[0], lapQuantity);
 	smallFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
 }
