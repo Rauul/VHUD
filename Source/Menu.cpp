@@ -8,10 +8,14 @@ void Menu::Init(const ScreenInfoV01 & info)
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &fuelIconSprite);
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &tyresIconSprite);
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &engineIconSprite);
+	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &rainIconSprite);
+	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &inputsIconSprite);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, BACKGROUND_TEXTURE, &boxTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, FUEL_ICON, &fuelIconTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, TYRES_ICON, &tyresIconTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, ENGINE_ICON, &engineIconTexture);
+	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, RAIN_ICON, &rainIconTexture);
+	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, INPUTS_ICON, &inputsIconTexture);
 
 	position.x = info.mWidth / 2 - size.right / 2;
 }
@@ -50,6 +54,22 @@ void Menu::Uninit(const ScreenInfoV01 & info)
 		engineIconSprite->Release();
 		engineIconSprite = NULL;
 	}
+	if (rainIconTexture) {
+		rainIconTexture->Release();
+		rainIconTexture = NULL;
+	}
+	if (rainIconSprite) {
+		rainIconSprite->Release();
+		rainIconSprite = NULL;
+	}
+	if (inputsIconTexture) {
+		inputsIconTexture->Release();
+		inputsIconTexture = NULL;
+	}
+	if (inputsIconSprite) {
+		inputsIconSprite->Release();
+		inputsIconSprite = NULL;
+	}
 }
 
 void Menu::PreReset(const ScreenInfoV01 & info)
@@ -60,6 +80,10 @@ void Menu::PreReset(const ScreenInfoV01 & info)
 		tyresIconSprite->OnLostDevice();
 	if (engineIconSprite)
 		engineIconSprite->OnLostDevice();
+	if (rainIconSprite)
+		rainIconSprite->OnLostDevice();
+	if (inputsIconSprite)
+		inputsIconSprite->OnLostDevice();
 	if (boxSprite)
 		boxSprite->OnLostDevice();
 }
@@ -72,6 +96,10 @@ void Menu::PostReset(const ScreenInfoV01 & info)
 		tyresIconSprite->OnResetDevice();
 	if (engineIconSprite)
 		engineIconSprite->OnResetDevice();
+	if (rainIconSprite)
+		rainIconSprite->OnResetDevice();
+	if (inputsIconSprite)
+		inputsIconSprite->OnResetDevice();
 	if (boxSprite)
 		boxSprite->OnResetDevice();
 }
@@ -85,9 +113,9 @@ void Menu::Draw(bool inEditMode)
 	DrawIcon(0, fuelIconSprite, fuelIconTexture);
 	DrawIcon(1, tyresIconSprite, tyresIconTexture);
 	DrawIcon(2, engineIconSprite, engineIconTexture);
-	/*DrawIcon(3, fuelIconSprite, fuelIconTexture);
-	DrawIcon(4, fuelIconSprite, fuelIconTexture);
-	DrawIcon(5, fuelIconSprite, fuelIconTexture);
+	DrawIcon(3, rainIconSprite, rainIconTexture);
+	DrawIcon(4, inputsIconSprite, inputsIconTexture);
+	/*DrawIcon(5, fuelIconSprite, fuelIconTexture);
 	DrawIcon(6, fuelIconSprite, fuelIconTexture);
 	DrawIcon(7, fuelIconSprite, fuelIconTexture);
 	DrawIcon(8, fuelIconSprite, fuelIconTexture);

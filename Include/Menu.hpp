@@ -25,6 +25,10 @@ public:
 	LPDIRECT3DTEXTURE9 tyresIconTexture = NULL;
 	LPD3DXSPRITE engineIconSprite = NULL;
 	LPDIRECT3DTEXTURE9 engineIconTexture = NULL;
+	LPD3DXSPRITE rainIconSprite = NULL;
+	LPDIRECT3DTEXTURE9 rainIconTexture = NULL;
+	LPD3DXSPRITE inputsIconSprite = NULL;
+	LPDIRECT3DTEXTURE9 inputsIconTexture = NULL;
 	LPD3DXSPRITE boxSprite = NULL;
 	LPDIRECT3DTEXTURE9 boxTexture = NULL;
 	int mouseInSlot = -1;

@@ -25,6 +25,12 @@
     <ClInclude Include="Include\Engine.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Rain.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Inputs.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sourse Files">
@@ -53,6 +59,12 @@
       <Filter>Sourse Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine.cpp">
+      <Filter>Sourse Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rain.cpp">
+      <Filter>Sourse Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Inputs.cpp">
       <Filter>Sourse Files</Filter>
     </ClCompile>
   </ItemGroup>

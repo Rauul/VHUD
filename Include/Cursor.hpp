@@ -30,7 +30,9 @@ public:
 		None,
 		Fuel,
 		Tyres,
-		Engine
+		Engine,
+		Rain,
+		Inputs
 	};
 
 	LockedTo lockedTo = LockedTo::None;

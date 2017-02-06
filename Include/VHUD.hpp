@@ -7,6 +7,8 @@
 #include "Fuel.hpp"
 #include "Tyres.hpp"
 #include "Engine.hpp"
+#include "Rain.hpp"
+#include "Inputs.hpp"
 #include <d3dx9.h>
 
 #define PLUGIN_NAME					"rF2_V-HUD"
@@ -89,6 +91,8 @@ public:
 	bool MouseIsOver(Fuel);
 	bool MouseIsOver(Tyres);
 	bool MouseIsOver(Engine);
+	bool MouseIsOver(Rain);
+	bool MouseIsOver(Inputs);
 	void UpdatePositions();
 	void MenuEvents();
 

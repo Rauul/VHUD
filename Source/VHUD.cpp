@@ -44,6 +44,8 @@ void __cdecl DestroyPluginObject( PluginObject *obj )  { delete( (VHUD *) obj );
 Fuel fuelWidget;
 Tyres tyresWidget;
 Engine engineWidget;
+Rain rainWidget;
+Inputs inputsWidget;
 Menu menu;
 Cursor cursor;
 
@@ -110,6 +112,7 @@ void VHUD::UpdateTelemetry( const TelemInfoV01& info )
 	fuelWidget.Update(info);
 	tyresWidget.Update(info);
 	engineWidget.Update(info);
+	inputsWidget.Update(info);
 }
 
 
@@ -120,6 +123,8 @@ void VHUD::InitScreen(const ScreenInfoV01& info)
 	fuelWidget.Init(info);
 	tyresWidget.Init(info);
 	engineWidget.Init(info);
+	rainWidget.Init(info);
+	inputsWidget.Init(info);
 }
 
 void VHUD::UninitScreen(const ScreenInfoV01& info)
@@ -129,6 +134,8 @@ void VHUD::UninitScreen(const ScreenInfoV01& info)
 	fuelWidget.Uninit(info);
 	tyresWidget.Uninit(info);
 	engineWidget.Uninit(info);
+	rainWidget.Uninit(info);
+	inputsWidget.Uninit(info);
 }
 
 void VHUD::RenderScreenBeforeOverlays(const ScreenInfoV01& info)
@@ -148,6 +155,8 @@ void VHUD::PreReset(const ScreenInfoV01& info)
 	fuelWidget.PreReset(info);
 	tyresWidget.PreReset(info);
 	engineWidget.PreReset(info);
+	rainWidget.PreReset(info);
+	inputsWidget.PreReset(info);
 }
 
 void VHUD::PostReset(const ScreenInfoV01& info)
@@ -157,6 +166,8 @@ void VHUD::PostReset(const ScreenInfoV01& info)
 	fuelWidget.PostReset(info);
 	tyresWidget.PostReset(info);
 	engineWidget.PostReset(info);
+	rainWidget.PostReset(info);
+	inputsWidget.PostReset(info);
 }
 
 void VHUD::DrawGraphics(const ScreenInfoV01& info)
@@ -167,6 +178,8 @@ void VHUD::DrawGraphics(const ScreenInfoV01& info)
 	fuelWidget.Draw(inEditMode);
 	tyresWidget.Draw(inEditMode);
 	engineWidget.Draw(inEditMode);
+	rainWidget.Draw(inEditMode);
+	inputsWidget.Draw(inEditMode);
 	cursor.Draw(inEditMode);
 }
 
@@ -207,6 +220,24 @@ bool VHUD::MouseIsOver(Engine)
 		return false;
 }
 
+bool VHUD::MouseIsOver(Rain)
+{
+	if (cursor.position.y >= rainWidget.position.y && cursor.position.y <= rainWidget.position.y + rainWidget.size.bottom &&
+		cursor.position.x >= rainWidget.position.x && cursor.position.x <= rainWidget.position.x + rainWidget.size.right)
+		return true;
+	else
+		return false;
+}
+
+bool VHUD::MouseIsOver(Inputs)
+{
+	if (cursor.position.y >= inputsWidget.position.y && cursor.position.y <= inputsWidget.position.y + inputsWidget.size.bottom &&
+		cursor.position.x >= inputsWidget.position.x && cursor.position.x <= inputsWidget.position.x + inputsWidget.size.right)
+		return true;
+	else
+		return false;
+}
+
 void VHUD::UpdatePositions()
 {
 	if (!inEditMode || (GetKeyState(VK_LBUTTON) & 0x100) == 0)
@@ -226,6 +257,16 @@ void VHUD::UpdatePositions()
 	{
 		cursor.lockedTo == Cursor::LockedTo::Engine;
 		engineWidget.UpdatePosition();
+	}
+	else if (MouseIsOver(rainWidget) && (cursor.lockedTo == Cursor::LockedTo::Rain || cursor.lockedTo == Cursor::LockedTo::None))
+	{
+		cursor.lockedTo == Cursor::LockedTo::Rain;
+		rainWidget.UpdatePosition();
+	}
+	else if (MouseIsOver(inputsWidget) && (cursor.lockedTo == Cursor::LockedTo::Inputs || cursor.lockedTo == Cursor::LockedTo::None))
+	{
+		cursor.lockedTo == Cursor::LockedTo::Inputs;
+		inputsWidget.UpdatePosition();
 	}
 }
 
@@ -292,9 +333,49 @@ void VHUD::MenuEvents()
 				mouseDownLastFrame = false;
 			}
 		}
+		else if (cursor.position.y >= menu.position.y + 5 && cursor.position.y <= menu.position.y + 69 &&
+			cursor.position.x >= menu.position.x + 5 + 68 * 3 && cursor.position.x <= menu.position.x + 69 + 68 * 3)
+		{
+			menu.mouseInSlot = 3;
+
+			if ((GetKeyState(VK_LBUTTON) & 0x100) != 0)
+			{
+				if (!mouseDownLastFrame)
+				{
+					rainWidget.enabled = !rainWidget.enabled;
+				}
+				mouseDownLastFrame = true;
+			}
+			else
+			{
+				mouseDownLastFrame = false;
+			}
+		}
+		else if (cursor.position.y >= menu.position.y + 5 && cursor.position.y <= menu.position.y + 69 &&
+			cursor.position.x >= menu.position.x + 5 + 68 * 4 && cursor.position.x <= menu.position.x + 69 + 68 * 4)
+		{
+			menu.mouseInSlot = 4;
+
+			if ((GetKeyState(VK_LBUTTON) & 0x100) != 0)
+			{
+				if (!mouseDownLastFrame)
+				{
+					inputsWidget.enabled = !inputsWidget.enabled;
+				}
+				mouseDownLastFrame = true;
+			}
+			else
+			{
+				mouseDownLastFrame = false;
+			}
+		}
 	}
 }
 
 void VHUD::UpdateScoring( const ScoringInfoV01& info )
 {
+	if (!inRealtime)
+		return;
+
+	rainWidget.Update(info);
 }
