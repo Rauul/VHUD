@@ -28,7 +28,7 @@ public:
 	void DrawTxt();
 
 	RECT size = { 0, 0, 171, 65 };
-	D3DXVECTOR3 position = { 200, 810, 0 };
+	D3DXVECTOR3 position = { 0, 810, 0 };
 	D3DCOLOR backgroundColor = 0xFF000000;
 	D3DCOLOR boarderColor = 0xFFAAAAAA;
 	LPD3DXFONT bigFont = NULL;

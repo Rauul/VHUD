@@ -29,7 +29,7 @@ public:
 	void DrawForeground();
 
 	RECT size = { 0, 0, 64, 65 };
-	D3DXVECTOR3 position = { 200, 880, 0 };
+	D3DXVECTOR3 position = { 0, 880, 0 };
 	D3DCOLOR backgroundColor = 0xFF000000;
 	D3DCOLOR boarderColor = 0xFFAAAAAA;
 	LPD3DXSPRITE backgroundSprite = NULL;

@@ -9,6 +9,8 @@ void Tyres::Init(const ScreenInfoV01 & info)
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, TYRES_ICON, &iconTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, BACKGROUND_TEXTURE, &boxTexture);
 	D3DXCreateFontIndirect((LPDIRECT3DDEVICE9)info.mDevice, &smallFontDesc, &smallFont);
+
+	position.x = info.mWidth / 2 - size.right / 2;
 }
 
 void Tyres::Uninit(const ScreenInfoV01 & info)
