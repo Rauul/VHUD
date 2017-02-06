@@ -2,22 +2,22 @@
 #define _INTERNALS_EXAMPLE_H
 
 #include "InternalsPlugin.hpp"
-#include "Fuel.hpp"
 #include "Menu.hpp"
 #include "Cursor.hpp"
+#include "Fuel.hpp"
+#include "Tyres.hpp"
+#include "Engine.hpp"
 #include <d3dx9.h>
 
 #define PLUGIN_NAME					"rF2_V-HUD"
 #define PLUGIN_VERSION				"0.1"
 
 #if _WIN64
-#define CONFIG_FILE					"Bin64\\Plugins\\VHUD\\RelativeTime.ini"
+#define CONFIG_FILE					"Bin64\\Plugins\\VHUD\\VHUD.ini"
 #define BACKGROUND_TEXTURE			"Bin64\\Plugins\\VHUD\\Images\\Background.png"
 #else
-#define LOG_FILE					"Bin32\\Plugins\\RelativeTime.log"
-#define CONFIG_FILE					"Bin32\\Plugins\\RelativeTime.ini"
-#define TEXTURE_BACKGROUND			"Bin32\\Plugins\\RelativeTimeBackground.png"
-#define MOUSE_TEXTURE				"Bin32\\Plugins\\RelativeTimeCursor.png"
+#define CONFIG_FILE					"Bin32\\Plugins\\VHUD\\VHUD.ini"
+#define BACKGROUND_TEXTURE			"Bin32\\Plugins\\VHUD\\Images\\Background.png"
 #endif
 
 #define ARIAL						"Arial"
@@ -85,9 +85,10 @@ public:
 	
 
 	// USER FUNCTIONS
-	bool NewLapStarted(const TelemInfoV01& info);
-	bool MouseIsOver(Fuel);
 	bool MouseIsOver(Menu);
+	bool MouseIsOver(Fuel);
+	bool MouseIsOver(Tyres);
+	bool MouseIsOver(Engine);
 	void UpdatePositions();
 	void MenuEvents();
 

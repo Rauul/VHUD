@@ -1,18 +1,17 @@
-#include "Fuel.hpp"
+#include "Engine.hpp"
 #include "VHUD.hpp"
 #include <stdio.h>
 
-void Fuel::Init(const ScreenInfoV01 & info)
+void Engine::Init(const ScreenInfoV01 & info)
 {
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &iconSprite);
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &boxSprite);
-	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, FUEL_ICON, &iconTexture);
+	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, ENGINE_ICON, &iconTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, BACKGROUND_TEXTURE, &boxTexture);
-	D3DXCreateFontIndirect((LPDIRECT3DDEVICE9)info.mDevice, &bigFontDesc, &bigFont);
 	D3DXCreateFontIndirect((LPDIRECT3DDEVICE9)info.mDevice, &smallFontDesc, &smallFont);
 }
 
-void Fuel::Uninit(const ScreenInfoV01 & info)
+void Engine::Uninit(const ScreenInfoV01 & info)
 {
 	if (iconTexture) {
 		iconTexture->Release();
@@ -30,80 +29,39 @@ void Fuel::Uninit(const ScreenInfoV01 & info)
 		boxSprite->Release();
 		boxSprite = NULL;
 	}
-	if (bigFont) {
-		bigFont->Release();
-		bigFont = NULL;
-	}
 	if (smallFont) {
 		smallFont->Release();
 		smallFont = NULL;
 	}
 }
 
-void Fuel::PreReset(const ScreenInfoV01 & info)
+void Engine::PreReset(const ScreenInfoV01 & info)
 {
 	if (iconSprite)
 		iconSprite->OnLostDevice();
 	if (boxSprite)
 		boxSprite->OnLostDevice();
-	if (bigFont)
-		bigFont->OnLostDevice();
 	if (smallFont)
 		smallFont->OnLostDevice();
 }
 
-void Fuel::PostReset(const ScreenInfoV01 & info)
+void Engine::PostReset(const ScreenInfoV01 & info)
 {
 	if (iconSprite)
 		iconSprite->OnResetDevice();
 	if (boxSprite)
 		boxSprite->OnResetDevice();
-	if (bigFont)
-		bigFont->OnResetDevice();
 	if (smallFont)
 		smallFont->OnResetDevice();
 }
 
-void Fuel::Update(const TelemInfoV01& info)
+void Engine::Update(const TelemInfoV01 & info)
 {
-	quantity = info.mFuel;
-
-	if (firstUpdate)
-	{
-		quantityLastLap = quantity;
-		firstUpdate = false;
-	}
-
-	if (NewLapStarted(info))
-	{
-		if (quantityLastLap > quantity)
-		{
-			for (int i = 2; i > 0; i--)
-			{
-				usedPerLap[i] = usedPerLap[i - 1];
-			}
-			usedPerLap[0] = quantityLastLap - quantity;
-		}
-		quantityLastLap = quantity;
-		lastLapStartET = info.mLapStartET;
-	}
-
-	if (usedPerLap[0] > 0 && usedPerLap[1] > 0 && usedPerLap[2] > 0)
-	{
-		double avgFuelConsumption = (usedPerLap[0] + usedPerLap[1] + usedPerLap[2]) / 3;
-		lapQuantity = quantity / avgFuelConsumption;
-	}
+	oilTemp = info.mEngineOilTemp;
+	waterTemp = info.mEngineWaterTemp;
 }
 
-bool Fuel::NewLapStarted(const TelemInfoV01 & info)
-{
-	if (info.mLapStartET != lastLapStartET)
-		return true;
-
-	return false;
-}
-
-void Fuel::UpdatePosition()
+void Engine::UpdatePosition()
 {
 	if (!enabled)
 		return;
@@ -116,7 +74,7 @@ void Fuel::UpdatePosition()
 	}
 }
 
-void Fuel::Draw(bool inEditMode)
+void Engine::Draw(bool inEditMode)
 {
 	if (!enabled)
 		return;
@@ -126,7 +84,7 @@ void Fuel::Draw(bool inEditMode)
 	DrawTxt();
 }
 
-void Fuel::DrawBox(bool inEditMode)
+void Engine::DrawBox(bool inEditMode)
 {
 	boxSprite->Begin(D3DXSPRITE_ALPHABLEND);
 	boxSprite->Draw(boxTexture, &size, NULL, &position, backgroundColor);
@@ -165,7 +123,7 @@ void Fuel::DrawBox(bool inEditMode)
 	}
 }
 
-void Fuel::DrawIcon()
+void Engine::DrawIcon()
 {
 	RECT size = { 0, 0, 64, 64 };
 	D3DCOLOR color = 0xFFFFFFFF;
@@ -175,22 +133,33 @@ void Fuel::DrawIcon()
 	iconSprite->End();
 }
 
-void Fuel::DrawTxt()
+void Engine::DrawTxt()
 {
 	D3DCOLOR color = 0xFFFFFFFF;
 	RECT pos;
-	pos.left = position.x + 50;
-	pos.top = position.y + 2;
+	pos.left = position.x + 40;
+	pos.top = position.y + 10;
 	pos.right = pos.left + 121;
 	pos.bottom = pos.top + 36;
 	char text[32] = "";
 
-	sprintf(text, "%.2f", quantity);
-	bigFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
+	sprintf(text, "%.0f C", oilTemp);
+	smallFont->DrawText(NULL, text, -1, &pos, DT_RIGHT, color);
 
-	pos.top += 40;
+	pos.top += 25;
 	pos.bottom = pos.top + 24;
 
-	sprintf(text, "%.2f | %.1f", usedPerLap[0], lapQuantity);
-	smallFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
+	sprintf(text, "%.0f C", waterTemp);
+	smallFont->DrawText(NULL, text, -1, &pos, DT_RIGHT, color);
+
+	pos.right -= 50;
+
+	sprintf(text, "Water");
+	smallFont->DrawText(NULL, text, -1, &pos, DT_RIGHT, color);
+
+	pos.top -= 25;
+	pos.bottom = pos.top + 24;
+
+	sprintf(text, "Oil");
+	smallFont->DrawText(NULL, text, -1, &pos, DT_RIGHT, color);
 }

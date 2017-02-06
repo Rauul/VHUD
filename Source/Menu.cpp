@@ -2,28 +2,16 @@
 #include "VHUD.hpp"
 #include "Menu.hpp"
 
-Menu::Menu(int x)
-{
-	position.x = 200;
-	position.y = 200;
-	position.z = 0;
-	size.left = 0;
-	size.top = 0;
-	size.right = 686;
-	size.bottom = 74;
-	backgroundColor = 0xFF000000;
-	iconColor = 0xFFCCCCCC;
-	iconMouseOverColor = 0xFFFFFFFF;
-	boarderColor = 0xFFAAAAAA;
-	useBoarder = true;
-}
-
 void Menu::Init(const ScreenInfoV01 & info)
 {
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &boxSprite);
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &fuelIconSprite);
+	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &tyresIconSprite);
+	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &engineIconSprite);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, BACKGROUND_TEXTURE, &boxTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, FUEL_ICON, &fuelIconTexture);
+	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, TYRES_ICON, &tyresIconTexture);
+	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, ENGINE_ICON, &engineIconTexture);
 
 	position.x = info.mWidth / 2 - size.right / 2;
 }
@@ -46,12 +34,32 @@ void Menu::Uninit(const ScreenInfoV01 & info)
 		fuelIconSprite->Release();
 		fuelIconSprite = NULL;
 	}
+	if (tyresIconTexture) {
+		tyresIconTexture->Release();
+		tyresIconTexture = NULL;
+	}
+	if (tyresIconSprite) {
+		tyresIconSprite->Release();
+		tyresIconSprite = NULL;
+	}
+	if (engineIconTexture) {
+		engineIconTexture->Release();
+		engineIconTexture = NULL;
+	}
+	if (engineIconSprite) {
+		engineIconSprite->Release();
+		engineIconSprite = NULL;
+	}
 }
 
 void Menu::PreReset(const ScreenInfoV01 & info)
 {
 	if (fuelIconSprite)
 		fuelIconSprite->OnLostDevice();
+	if (tyresIconSprite)
+		tyresIconSprite->OnLostDevice();
+	if (engineIconSprite)
+		engineIconSprite->OnLostDevice();
 	if (boxSprite)
 		boxSprite->OnLostDevice();
 }
@@ -60,6 +68,10 @@ void Menu::PostReset(const ScreenInfoV01 & info)
 {
 	if (fuelIconSprite)
 		fuelIconSprite->OnResetDevice();
+	if (tyresIconSprite)
+		tyresIconSprite->OnResetDevice();
+	if (engineIconSprite)
+		engineIconSprite->OnResetDevice();
 	if (boxSprite)
 		boxSprite->OnResetDevice();
 }
@@ -71,9 +83,9 @@ void Menu::Draw(bool inEditMode)
 
 	DrawBox();
 	DrawIcon(0, fuelIconSprite, fuelIconTexture);
-	/*DrawIcon(1, fuelIconSprite, fuelIconTexture);
-	DrawIcon(2, fuelIconSprite, fuelIconTexture);
-	DrawIcon(3, fuelIconSprite, fuelIconTexture);
+	DrawIcon(1, tyresIconSprite, tyresIconTexture);
+	DrawIcon(2, engineIconSprite, engineIconTexture);
+	/*DrawIcon(3, fuelIconSprite, fuelIconTexture);
 	DrawIcon(4, fuelIconSprite, fuelIconTexture);
 	DrawIcon(5, fuelIconSprite, fuelIconTexture);
 	DrawIcon(6, fuelIconSprite, fuelIconTexture);
@@ -88,7 +100,7 @@ void Menu::DrawBox()
 	boxSprite->Draw(boxTexture, &size, NULL, &position, backgroundColor);
 	boxSprite->End();
 
-	if (useBoarder)
+	if (useBorder)
 	{
 		RECT borderSize = size;
 		D3DXVECTOR3 borderPosition = position;

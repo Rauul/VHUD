@@ -19,6 +19,12 @@
     <ClInclude Include="Include\Cursor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Tyres.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Engine.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sourse Files">
@@ -41,6 +47,12 @@
       <Filter>Sourse Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Cursor.cpp">
+      <Filter>Sourse Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Tyres.cpp">
+      <Filter>Sourse Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine.cpp">
       <Filter>Sourse Files</Filter>
     </ClCompile>
   </ItemGroup>

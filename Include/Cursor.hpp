@@ -28,7 +28,9 @@ public:
 	enum LockedTo
 	{
 		None,
-		Fuel
+		Fuel,
+		Tyres,
+		Engine
 	};
 
 	LockedTo lockedTo = LockedTo::None;
