@@ -9,9 +9,11 @@ Menu::Menu(int x)
 	position.z = 0;
 	size.left = 0;
 	size.top = 0;
-	size.right = 1337;
-	size.bottom = 140;
+	size.right = 686;
+	size.bottom = 74;
 	backgroundColor = 0xFF000000;
+	iconColor = 0xFFCCCCCC;
+	iconMouseOverColor = 0xFFFFFFFF;
 	boarderColor = 0xFFAAAAAA;
 	useBoarder = true;
 }
@@ -21,7 +23,9 @@ void Menu::Init(const ScreenInfoV01 & info)
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &boxSprite);
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &fuelIconSprite);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, BACKGROUND_TEXTURE, &boxTexture);
-	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, BIG_FUEL_ICON, &fuelIconTexture);
+	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, FUEL_ICON, &fuelIconTexture);
+
+	position.x = info.mWidth / 2 - size.right / 2;
 }
 
 void Menu::Uninit(const ScreenInfoV01 & info)
@@ -60,10 +64,22 @@ void Menu::PostReset(const ScreenInfoV01 & info)
 		boxSprite->OnResetDevice();
 }
 
-void Menu::Draw()
+void Menu::Draw(bool inEditMode)
 {
+	if (!inEditMode)
+		return;
+
 	DrawBox();
 	DrawIcon(0, fuelIconSprite, fuelIconTexture);
+	/*DrawIcon(1, fuelIconSprite, fuelIconTexture);
+	DrawIcon(2, fuelIconSprite, fuelIconTexture);
+	DrawIcon(3, fuelIconSprite, fuelIconTexture);
+	DrawIcon(4, fuelIconSprite, fuelIconTexture);
+	DrawIcon(5, fuelIconSprite, fuelIconTexture);
+	DrawIcon(6, fuelIconSprite, fuelIconTexture);
+	DrawIcon(7, fuelIconSprite, fuelIconTexture);
+	DrawIcon(8, fuelIconSprite, fuelIconTexture);
+	DrawIcon(9, fuelIconSprite, fuelIconTexture);*/
 }
 
 void Menu::DrawBox()
@@ -107,15 +123,14 @@ void Menu::DrawBox()
 
 void Menu::DrawIcon(int slot, LPD3DXSPRITE& sprite, LPDIRECT3DTEXTURE9& texture)
 {
-	RECT size = { 0, 0, 128, 128 };
+	RECT size = { 0, 0, 64, 64 };
 	D3DXVECTOR3 pos;
-	pos.x = position.x + 6 + (slot * 133);
-	pos.y = position.y + 6;
+	pos.x = position.x + 5 + (slot * 68);
+	pos.y = position.y + 5;
 	pos.z = 0;
-	D3DCOLOR color = 0xFFFFFFFF;
 
 	sprite->Begin(D3DXSPRITE_ALPHABLEND);
-	sprite->Draw(texture, &size, NULL, &pos, color);
+	sprite->Draw(texture, &size, NULL, &pos, mouseInSlot == slot ? iconMouseOverColor : iconColor);
 	sprite->End();
 
 	//

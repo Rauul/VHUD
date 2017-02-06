@@ -16,6 +16,9 @@
     <ClInclude Include="Include\Menu.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Cursor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sourse Files">
@@ -35,6 +38,9 @@
       <Filter>Sourse Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Menu.cpp">
+      <Filter>Sourse Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cursor.cpp">
       <Filter>Sourse Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -4,11 +4,9 @@
 #include <d3dx9.h>
 
 #if _WIN64
-#define BACKGROUND_TEXTURE		"Bin64\\Plugins\\VHUD\\Background.png"
-#define FUEL_ICON				"Bin64\\Plugins\\VHUD\\Icons\\Fuel.png"
+#define FUEL_ICON				"Bin64\\Plugins\\VHUD\\Images\\Fuel.png"
 #else
-#define BACKGROUND_TEXTURE		"Bin32\\Plugins\\VHUD\\Background.png"
-#define FUEL_ICON				"Bin32\\Plugins\\VHUD\\Icons\\Fuel.png"
+#define FUEL_ICON				"Bin32\\Plugins\\VHUD\\Images\\Fuel.png"
 #endif
 
 #define TAHOMA						"Tahoma"
@@ -25,8 +23,10 @@ public:
 	void PostReset(const ScreenInfoV01& info);
 	void Update(const TelemInfoV01& info);
 	bool NewLapStarted(const TelemInfoV01& info);
-	void Draw();
-	void DrawBox();
+	bool MouseIsOver(POINT& cursorPos);
+	void UpdatePosition();
+	void Draw(bool inEditMode);
+	void DrawBox(bool inEditMode);
 	void DrawIcon();
 	void DrawTxt();
 	
@@ -48,7 +48,7 @@ public:
 	double lastLapStartET = 0.00;
 	double lapQuantity = 0.00;
 	bool firstUpdate = true;
-	bool useBoarder;
+	bool useBorder;
 	bool enabled = true;
 
 private:

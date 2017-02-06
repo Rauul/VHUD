@@ -4,25 +4,31 @@
 #include "InternalsPlugin.hpp"
 #include "Fuel.hpp"
 #include "Menu.hpp"
+#include "Cursor.hpp"
 #include <d3dx9.h>
 
-#define PLUGIN_NAME             "rF2_V-HUD"
-#define PLUGIN_VERSION			"0.1"
+#define PLUGIN_NAME					"rF2_V-HUD"
+#define PLUGIN_VERSION				"0.1"
 
 #if _WIN64
-#define LOG_FILE				"Bin64\\Plugins\\RelativeTime.log"
-#define CONFIG_FILE				"Bin64\\Plugins\\RelativeTime.ini"
-#define MOUSE_TEXTURE			"Bin64\\Plugins\\RelativeTimeCursor.png"
+#define CONFIG_FILE					"Bin64\\Plugins\\VHUD\\RelativeTime.ini"
+#define BACKGROUND_TEXTURE			"Bin64\\Plugins\\VHUD\\Images\\Background.png"
 #else
-#define LOG_FILE				"Bin32\\Plugins\\RelativeTime.log"
-#define CONFIG_FILE				"Bin32\\Plugins\\RelativeTime.ini"
-#define TEXTURE_BACKGROUND		"Bin32\\Plugins\\RelativeTimeBackground.png"
-#define MOUSE_TEXTURE			"Bin32\\Plugins\\RelativeTimeCursor.png"
+#define LOG_FILE					"Bin32\\Plugins\\RelativeTime.log"
+#define CONFIG_FILE					"Bin32\\Plugins\\RelativeTime.ini"
+#define TEXTURE_BACKGROUND			"Bin32\\Plugins\\RelativeTimeBackground.png"
+#define MOUSE_TEXTURE				"Bin32\\Plugins\\RelativeTimeCursor.png"
 #endif
 
 #define ARIAL						"Arial"
 #define TAHOMA						"Tahoma"
 #define BIG_FONT_SIZE				40
+
+#define BACKGROUND_COLOR			0xFF000000
+#define BORDER_COLOR				0xFFAAAAAA
+
+#define DEFAULT_EDIT_KEY			(0x45)      /* "E" */
+#define KEY_DOWN(k)					((GetAsyncKeyState(k) & 0x8000) && (GetAsyncKeyState(VK_CONTROL) & 0x8000))
 
 class VHUD : public InternalsPluginV06
 {
@@ -80,10 +86,16 @@ public:
 
 	// USER FUNCTIONS
 	bool NewLapStarted(const TelemInfoV01& info);
+	bool MouseIsOver(Fuel);
+	bool MouseIsOver(Menu);
+	void UpdatePositions();
+	void MenuEvents();
 
 	// USER VARIABELS
 	bool inRealtime = false;
 	bool inEditMode = false;
+	bool editkeyDownLastFrame = false;
+	bool mouseDownLastFrame = false;
 
 private:
 
@@ -93,4 +105,3 @@ private:
 };
 
 #endif // _INTERNALS_EXAMPLE_H
-

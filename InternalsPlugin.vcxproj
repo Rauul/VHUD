@@ -278,6 +278,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Cursor.hpp" />
     <ClInclude Include="Include\Fuel.hpp" />
     <ClInclude Include="Include\InternalsPlugin.hpp" />
     <ClInclude Include="Include\Menu.hpp" />
@@ -285,6 +286,7 @@
     <ClInclude Include="Include\VHUD.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Cursor.cpp" />
     <ClCompile Include="Source\Fuel.cpp" />
     <ClCompile Include="Source\Menu.cpp" />
     <ClCompile Include="Source\VHUD.cpp" />

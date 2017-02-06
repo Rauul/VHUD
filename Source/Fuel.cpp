@@ -13,7 +13,7 @@ Fuel::Fuel(int x)
 	size.bottom = 65;
 	backgroundColor = 0xFF000000;
 	boarderColor = 0xFFAAAAAA;
-	useBoarder = true;
+	useBorder = true;
 }
 
 void Fuel::Init(const ScreenInfoV01 & info)
@@ -96,7 +96,7 @@ void Fuel::Update(const TelemInfoV01& info)
 			{
 				usedPerLap[i] = usedPerLap[i - 1];
 			}
-		usedPerLap[0] = quantityLastLap - quantity;
+			usedPerLap[0] = quantityLastLap - quantity;
 		}
 		quantityLastLap = quantity;
 		lastLapStartET = info.mLapStartET;
@@ -117,23 +117,44 @@ bool Fuel::NewLapStarted(const TelemInfoV01 & info)
 	return false;
 }
 
-void Fuel::Draw()
+bool Fuel::MouseIsOver(POINT& cursorPosistion)
+{
+	if (cursorPosistion.y >= position.y && cursorPosistion.y <= position.y + size.bottom && cursorPosistion.x >= position.x && cursorPosistion.x <= position.x + size.right)
+		return true;
+	else
+		return false;
+}
+
+void Fuel::UpdatePosition()
 {
 	if (!enabled)
 		return;
 
-	DrawBox();
+	POINT cursorPosition;
+	if (GetCursorPos(&cursorPosition))
+	{
+		position.x = cursorPosition.x - size.right / 2;
+		position.y = cursorPosition.y - size.bottom / 2;
+	}
+}
+
+void Fuel::Draw(bool inEditMode)
+{
+	if (!enabled)
+		return;
+
+	DrawBox(inEditMode);
 	DrawIcon();
 	DrawTxt();
 }
 
-void Fuel::DrawBox()
+void Fuel::DrawBox(bool inEditMode)
 {
 	boxSprite->Begin(D3DXSPRITE_ALPHABLEND);
 	boxSprite->Draw(boxTexture, &size, NULL, &position, backgroundColor);
 	boxSprite->End();
 
-	if (useBoarder)
+	if (useBorder || inEditMode)
 	{
 		RECT borderSize = size;
 		D3DXVECTOR3 borderPosition = position;
