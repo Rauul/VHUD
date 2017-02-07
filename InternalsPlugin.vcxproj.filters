@@ -31,6 +31,9 @@
     <ClInclude Include="Include\Inputs.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\FPSMeter.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sourse Files">
@@ -65,6 +68,9 @@
       <Filter>Sourse Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Inputs.cpp">
+      <Filter>Sourse Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\FPSMeter.cpp">
       <Filter>Sourse Files</Filter>
     </ClCompile>
   </ItemGroup>

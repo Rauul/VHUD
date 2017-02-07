@@ -169,12 +169,12 @@ void Inputs::DrawBars()
 	RECT throttleSize = { 0, 0, 12, 0 };
 	D3DXVECTOR3 throttlePosition = position;
 
-	clutchPosition.x += 7;
-	clutchPosition.y += 59 - 52 * clutch;
-	brakePosition.x += 27;
-	brakePosition.y += 59 - 52 * brake;
-	throttlePosition.x += 47;
-	throttlePosition.y += 59 - 52 * throttle;
+	clutchPosition.x += 6;
+	clutchPosition.y += 58 - 52 * clutch;
+	brakePosition.x += 26;
+	brakePosition.y += 58 - 52 * brake;
+	throttlePosition.x += 46;
+	throttlePosition.y += 58 - 52 * throttle;
 	clutchSize.top -= 52 * clutch;
 	brakeSize.top -= 52 * brake;
 	throttleSize.top -= 52 * throttle;

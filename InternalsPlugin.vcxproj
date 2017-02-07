@@ -280,6 +280,7 @@
   <ItemGroup>
     <ClInclude Include="Include\Cursor.hpp" />
     <ClInclude Include="Include\Engine.hpp" />
+    <ClInclude Include="Include\FPSMeter.hpp" />
     <ClInclude Include="Include\Fuel.hpp" />
     <ClInclude Include="Include\Inputs.hpp" />
     <ClInclude Include="Include\InternalsPlugin.hpp" />
@@ -292,6 +293,7 @@
   <ItemGroup>
     <ClCompile Include="Source\Cursor.cpp" />
     <ClCompile Include="Source\Engine.cpp" />
+    <ClCompile Include="Source\FPSMeter.cpp" />
     <ClCompile Include="Source\Fuel.cpp" />
     <ClCompile Include="Source\Inputs.cpp" />
     <ClCompile Include="Source\Menu.cpp" />

@@ -20,9 +20,10 @@ public:
 	void Uninit(const ScreenInfoV01& info);
 	void PreReset(const ScreenInfoV01& info);
 	void PostReset(const ScreenInfoV01& info);
-	void Update(const TelemInfoV01& info);
 	bool NewLapStarted(const TelemInfoV01& info);
+	void Update(const TelemInfoV01& info);
 	void UpdatePosition();
+	void ResetFuelUsage();
 	void Draw(bool inEditMode);
 	void DrawBox(bool inEditMode);
 	void DrawIcon();

@@ -32,7 +32,8 @@ public:
 		Tyres,
 		Engine,
 		Rain,
-		Inputs
+		Inputs,
+		FPSMeter
 	};
 
 	LockedTo lockedTo = LockedTo::None;

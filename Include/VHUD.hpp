@@ -9,6 +9,7 @@
 #include "Engine.hpp"
 #include "Rain.hpp"
 #include "Inputs.hpp"
+#include "FPSMeter.hpp"
 #include <d3dx9.h>
 
 #define PLUGIN_NAME					"rF2_V-HUD"
@@ -52,6 +53,8 @@ public:
 	void StartSession();           // session has started
 	void EndSession();             // session has ended
 
+	void Load();
+
 	// GAME OUTPUT
 	long WantsTelemetryUpdates() { return(1); } // CHANGE TO 1 TO ENABLE TELEMETRY EXAMPLE!
 	void UpdateTelemetry(const TelemInfoV01& info);
@@ -93,6 +96,7 @@ public:
 	bool MouseIsOver(Engine);
 	bool MouseIsOver(Rain);
 	bool MouseIsOver(Inputs);
+	bool MouseIsOver(FPSMeter);
 	void UpdatePositions();
 	void MenuEvents();
 

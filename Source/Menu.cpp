@@ -10,12 +10,14 @@ void Menu::Init(const ScreenInfoV01 & info)
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &engineIconSprite);
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &rainIconSprite);
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &inputsIconSprite);
+	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &fpsIconSprite);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, BACKGROUND_TEXTURE, &boxTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, FUEL_ICON, &fuelIconTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, TYRES_ICON, &tyresIconTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, ENGINE_ICON, &engineIconTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, RAIN_ICON, &rainIconTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, INPUTS_ICON, &inputsIconTexture);
+	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, FPS_ICON, &fpsIconTexture);
 
 	position.x = info.mWidth / 2 - size.right / 2;
 }
@@ -70,6 +72,14 @@ void Menu::Uninit(const ScreenInfoV01 & info)
 		inputsIconSprite->Release();
 		inputsIconSprite = NULL;
 	}
+	if (fpsIconTexture) {
+		fpsIconTexture->Release();
+		fpsIconTexture = NULL;
+	}
+	if (fpsIconSprite) {
+		fpsIconSprite->Release();
+		fpsIconSprite = NULL;
+	}
 }
 
 void Menu::PreReset(const ScreenInfoV01 & info)
@@ -84,6 +94,8 @@ void Menu::PreReset(const ScreenInfoV01 & info)
 		rainIconSprite->OnLostDevice();
 	if (inputsIconSprite)
 		inputsIconSprite->OnLostDevice();
+	if (fpsIconSprite)
+		fpsIconSprite->OnLostDevice();
 	if (boxSprite)
 		boxSprite->OnLostDevice();
 }
@@ -100,6 +112,8 @@ void Menu::PostReset(const ScreenInfoV01 & info)
 		rainIconSprite->OnResetDevice();
 	if (inputsIconSprite)
 		inputsIconSprite->OnResetDevice();
+	if (fpsIconSprite)
+		fpsIconSprite->OnResetDevice();
 	if (boxSprite)
 		boxSprite->OnResetDevice();
 }
@@ -115,8 +129,8 @@ void Menu::Draw(bool inEditMode)
 	DrawIcon(2, engineIconSprite, engineIconTexture);
 	DrawIcon(3, rainIconSprite, rainIconTexture);
 	DrawIcon(4, inputsIconSprite, inputsIconTexture);
-	/*DrawIcon(5, fuelIconSprite, fuelIconTexture);
-	DrawIcon(6, fuelIconSprite, fuelIconTexture);
+	DrawIcon(5, fpsIconSprite, fpsIconTexture);
+	/*DrawIcon(6, fuelIconSprite, fuelIconTexture);
 	DrawIcon(7, fuelIconSprite, fuelIconTexture);
 	DrawIcon(8, fuelIconSprite, fuelIconTexture);
 	DrawIcon(9, fuelIconSprite, fuelIconTexture);*/

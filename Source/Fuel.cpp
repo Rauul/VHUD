@@ -66,6 +66,14 @@ void Fuel::PostReset(const ScreenInfoV01 & info)
 		smallFont->OnResetDevice();
 }
 
+bool Fuel::NewLapStarted(const TelemInfoV01 & info)
+{
+	if (info.mLapStartET != lastLapStartET)
+		return true;
+
+	return false;
+}
+
 void Fuel::Update(const TelemInfoV01& info)
 {
 	quantity = info.mFuel;
@@ -78,7 +86,7 @@ void Fuel::Update(const TelemInfoV01& info)
 
 	if (NewLapStarted(info))
 	{
-		if (quantityLastLap > quantity)
+		if (quantityLastLap - quantity > 0.1)
 		{
 			for (int i = 2; i > 0; i--)
 			{
@@ -97,14 +105,6 @@ void Fuel::Update(const TelemInfoV01& info)
 	}
 }
 
-bool Fuel::NewLapStarted(const TelemInfoV01 & info)
-{
-	if (info.mLapStartET != lastLapStartET)
-		return true;
-
-	return false;
-}
-
 void Fuel::UpdatePosition()
 {
 	if (!enabled)
@@ -115,6 +115,14 @@ void Fuel::UpdatePosition()
 	{
 		position.x = cursorPosition.x - size.right / 2;
 		position.y = cursorPosition.y - size.bottom / 2;
+	}
+}
+
+void Fuel::ResetFuelUsage()
+{
+	for each (double d in usedPerLap)
+	{
+		d = 0;
 	}
 }
 
