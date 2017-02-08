@@ -25,20 +25,20 @@ using namespace std;
 
 // plugin information
 
-extern "C" __declspec( dllexport )
-const char * __cdecl GetPluginName()                   { return( "ExamplePlugin - 2008.02.13" ); }
+extern "C" __declspec(dllexport)
+const char * __cdecl GetPluginName() { return("ExamplePlugin - 2008.02.13"); }
 
-extern "C" __declspec( dllexport )
-PluginObjectType __cdecl GetPluginType()               { return( PO_INTERNALS ); }
+extern "C" __declspec(dllexport)
+PluginObjectType __cdecl GetPluginType() { return(PO_INTERNALS); }
 
-extern "C" __declspec( dllexport )
-int __cdecl GetPluginVersion()                         { return( 6 ); } // InternalsPluginV01 functionality (if you change this return value, you must derive from the appropriate class!)
+extern "C" __declspec(dllexport)
+int __cdecl GetPluginVersion() { return(6); } // InternalsPluginV01 functionality (if you change this return value, you must derive from the appropriate class!)
 
-extern "C" __declspec( dllexport )
-PluginObject * __cdecl CreatePluginObject()            { return( (PluginObject *) new VHUD ); }
+extern "C" __declspec(dllexport)
+PluginObject * __cdecl CreatePluginObject() { return((PluginObject *) new VHUD); }
 
-extern "C" __declspec( dllexport )
-void __cdecl DestroyPluginObject( PluginObject *obj )  { delete( (VHUD *) obj ); }
+extern "C" __declspec(dllexport)
+void __cdecl DestroyPluginObject(PluginObject *obj) { delete((VHUD *)obj); }
 
 
 Fuel fuelWidget;
@@ -92,21 +92,22 @@ void VHUD::ExitRealtime()
 {
 	inRealtime = false;
 	inEditMode = false;
+	SaveConfig(CONFIG_FILE);
 }
 
 
-void VHUD::UpdateTelemetry( const TelemInfoV01& info )
+void VHUD::UpdateTelemetry(const TelemInfoV01& info)
 {
 	if (!inRealtime)
 		return;
 
-	if (KEY_DOWN(DEFAULT_EDIT_KEY))
+	if (KEY_DOWN(editKey))
 	{
 		if (!editkeyDownLastFrame)
 		{
 			inEditMode = !inEditMode;
-			/*if (!inEditMode)
-				SaveConfig(grid, CONFIG_FILE);*/
+			if (!inEditMode)
+				SaveConfig(CONFIG_FILE);
 		}
 		editkeyDownLastFrame = true;
 	}
@@ -121,6 +122,13 @@ void VHUD::UpdateTelemetry( const TelemInfoV01& info )
 	inputsWidget.Update(info);
 }
 
+void VHUD::UpdateScoring(const ScoringInfoV01& info)
+{
+	if (!inRealtime)
+		return;
+
+	rainWidget.Update(info);
+}
 
 void VHUD::InitScreen(const ScreenInfoV01& info)
 {
@@ -132,6 +140,8 @@ void VHUD::InitScreen(const ScreenInfoV01& info)
 	rainWidget.Init(info);
 	inputsWidget.Init(info);
 	fpsWidget.Init(info);
+
+	LoadConfig(CONFIG_FILE);
 }
 
 void VHUD::UninitScreen(const ScreenInfoV01& info)
@@ -150,6 +160,9 @@ void VHUD::RenderScreenBeforeOverlays(const ScreenInfoV01& info)
 {
 	if (!inRealtime)
 		return;
+
+	if (inEditMode && KEY_DOWN(resetKey))
+		ResetPositions(info);
 
 	MenuEvents();
 	UpdatePositions();
@@ -184,7 +197,7 @@ void VHUD::PostReset(const ScreenInfoV01& info)
 void VHUD::DrawGraphics(const ScreenInfoV01& info)
 {
 	LPDIRECT3DDEVICE9 d3d = (LPDIRECT3DDEVICE9)info.mDevice;
-		
+
 	menu.Draw(inEditMode);
 	fuelWidget.Draw(inEditMode);
 	tyresWidget.Draw(inEditMode);
@@ -197,7 +210,7 @@ void VHUD::DrawGraphics(const ScreenInfoV01& info)
 
 bool VHUD::MouseIsOver(Menu)
 {
-	if (cursor.position.y >= menu.position.y && cursor.position.y <= menu.position.y + menu.size.bottom && 
+	if (cursor.position.y >= menu.position.y && cursor.position.y <= menu.position.y + menu.size.bottom &&
 		cursor.position.x >= menu.position.x && cursor.position.x <= menu.position.x + menu.size.right)
 		return true;
 	else
@@ -207,7 +220,7 @@ bool VHUD::MouseIsOver(Menu)
 
 bool VHUD::MouseIsOver(Fuel)
 {
-	if (cursor.position.y >= fuelWidget.position.y && cursor.position.y <= fuelWidget.position.y + fuelWidget.size.bottom && 
+	if (cursor.position.y >= fuelWidget.position.y && cursor.position.y <= fuelWidget.position.y + fuelWidget.size.bottom &&
 		cursor.position.x >= fuelWidget.position.x && cursor.position.x <= fuelWidget.position.x + fuelWidget.size.right)
 		return true;
 	else
@@ -216,7 +229,7 @@ bool VHUD::MouseIsOver(Fuel)
 
 bool VHUD::MouseIsOver(Tyres)
 {
-	if (cursor.position.y >= tyresWidget.position.y && cursor.position.y <= tyresWidget.position.y + tyresWidget.size.bottom && 
+	if (cursor.position.y >= tyresWidget.position.y && cursor.position.y <= tyresWidget.position.y + tyresWidget.size.bottom &&
 		cursor.position.x >= tyresWidget.position.x && cursor.position.x <= tyresWidget.position.x + tyresWidget.size.right)
 		return true;
 	else
@@ -423,10 +436,121 @@ void VHUD::MenuEvents()
 	}
 }
 
-void VHUD::UpdateScoring( const ScoringInfoV01& info )
+LPCSTR ConvertFloatToLPCSTR(float input)
 {
-	if (!inRealtime)
-		return;
+	LPCSTR output;
+	std::stringstream s;
+	s << input;
+	std::string ws = s.str();
+	output = ws.c_str();
+	return output;
+}
 
-	rainWidget.Update(info);
+void VHUD::ResetPositions(const ScreenInfoV01& info)
+{
+	float screenCenter = info.mWidth / 2;
+	float y = 250;
+	fuelWidget.position = { screenCenter, y, 0 };
+	y += 70;
+	tyresWidget.position = { screenCenter, y, 0 };
+	y += 70;
+	engineWidget.position = { screenCenter, y, 0 };
+	y += 70;
+	rainWidget.position = { screenCenter, y, 0 };
+	y += 70;
+	inputsWidget.position = { screenCenter, y, 0 };
+	y += 70;
+	fpsWidget.position = { screenCenter, y, 0 };
+}
+
+void VHUD::LoadConfig(const char * ini_file)
+{
+	// [Config]
+	fuelWidget.useBorder = tyresWidget.useBorder = engineWidget.useBorder = rainWidget.useBorder = inputsWidget.useBorder = fpsWidget.useBorder = GetPrivateProfileInt("Config", "Borders", USE_BORDERS, ini_file);
+	fuelWidget.backgroundColor = tyresWidget.backgroundColor = engineWidget.backgroundColor = rainWidget.backgroundColor = inputsWidget.backgroundColor = fpsWidget.backgroundColor = GetPrivateProfileInt("Config", "BackgroundColor", BACKGROUND_COLOR, ini_file);
+	fuelWidget.borderColor = tyresWidget.borderColor = engineWidget.borderColor = rainWidget.borderColor = inputsWidget.borderColor = fpsWidget.borderColor = GetPrivateProfileInt("Config", "BorderColor", BORDER_COLOR, ini_file);
+
+	// [Input]
+	editKey = GetPrivateProfileInt("Input", "EditKey", DEFAULT_EDIT_KEY, ini_file);
+	resetKey = GetPrivateProfileInt("Input", "ResetKey", DEFAULT_RESET_KEY, ini_file);
+
+	// [Fuel]
+	fuelWidget.enabled = GetPrivateProfileInt("Fuel", "Enabled", true, ini_file);
+	fuelWidget.position.x = GetPrivateProfileInt("Fuel", "PosX", fuelWidget.position.x, ini_file);
+	fuelWidget.position.y = GetPrivateProfileInt("Fuel", "PosY", fuelWidget.position.y, ini_file);
+
+	// [Tyres]
+	tyresWidget.enabled = GetPrivateProfileInt("Tyres", "Enabled", true, ini_file);
+	tyresWidget.position.x = GetPrivateProfileInt("Tyres", "PosX", tyresWidget.position.x, ini_file);
+	tyresWidget.position.y = GetPrivateProfileInt("Tyres", "PosY", tyresWidget.position.y, ini_file);
+
+	// [Engine]
+	engineWidget.enabled = GetPrivateProfileInt("engine", "Enabled", true, ini_file);
+	engineWidget.position.x = GetPrivateProfileInt("engine", "PosX", engineWidget.position.x, ini_file);
+	engineWidget.position.y = GetPrivateProfileInt("engine", "PosY", engineWidget.position.y, ini_file);
+
+	// [Rain]
+	rainWidget.enabled = GetPrivateProfileInt("Rain", "Enabled", true, ini_file);
+	rainWidget.position.x = GetPrivateProfileInt("Rain", "PosX", rainWidget.position.x, ini_file);
+	rainWidget.position.y = GetPrivateProfileInt("Rain", "PosY", rainWidget.position.y, ini_file);
+
+	// [Inputs]
+	inputsWidget.enabled = GetPrivateProfileInt("Inputs", "Enabled", true, ini_file);
+	inputsWidget.position.x = GetPrivateProfileInt("Inputs", "PosX", inputsWidget.position.x, ini_file);
+	inputsWidget.position.y = GetPrivateProfileInt("Inputs", "PosY", inputsWidget.position.y, ini_file);
+
+	// [PFSMeter]
+	fpsWidget.enabled = GetPrivateProfileInt("FPS", "Enabled", true, ini_file);
+	fpsWidget.position.x = GetPrivateProfileInt("FPS", "PosX", fpsWidget.position.x, ini_file);
+	fpsWidget.position.y = GetPrivateProfileInt("FPS", "PosY", fpsWidget.position.y, ini_file);
+}
+
+void VHUD::SaveConfig(const char *ini_file)
+{
+	char buffer[32];
+
+	// [Config]
+	WritePrivateProfileString("Config", "Borders", fuelWidget.useBorder ? "1" : "0", ini_file);
+
+	// [Fuel]
+	WritePrivateProfileString("Fuel", "Enabled", fuelWidget.enabled ? "1" : "0", ini_file);
+	sprintf(buffer, " %.0f", fuelWidget.position.x);
+	WritePrivateProfileString("Fuel", "PosX", buffer, ini_file);
+	sprintf(buffer, " %.0f", fuelWidget.position.y);
+	WritePrivateProfileString("Fuel", "PosY", buffer, ini_file);
+
+	// [Tyres]
+	WritePrivateProfileString("Tyres", "Enabled", tyresWidget.enabled ? "1" : "0", ini_file);
+	sprintf(buffer, " %.0f", tyresWidget.position.x);
+	WritePrivateProfileString("Tyres", "PosX", buffer, ini_file);
+	sprintf(buffer, " %.0f", tyresWidget.position.y);
+	WritePrivateProfileString("Tyres", "PosY", buffer, ini_file);
+
+	// [Engine]
+	WritePrivateProfileString("Engine", "Enabled", engineWidget.enabled ? "1" : "0", ini_file);
+	sprintf(buffer, " %.0f", engineWidget.position.x);
+	WritePrivateProfileString("Engine", "PosX", buffer, ini_file);
+	sprintf(buffer, " %.0f", engineWidget.position.y);
+	WritePrivateProfileString("Engine", "PosY", buffer, ini_file);
+
+	// [Rain]
+	WritePrivateProfileString("Rain", "Enabled", rainWidget.enabled ? "1" : "0", ini_file);
+	sprintf(buffer, " %.0f", rainWidget.position.x);
+	WritePrivateProfileString("Rain", "PosX", buffer, ini_file);
+	sprintf(buffer, " %.0f", rainWidget.position.y);
+	WritePrivateProfileString("Rain", "PosY", buffer, ini_file);
+
+	// [Inputs]
+	WritePrivateProfileString("Inputs", "Enabled", inputsWidget.enabled ? "1" : "0", ini_file);
+	sprintf(buffer, " %.0f", inputsWidget.position.x);
+	WritePrivateProfileString("Inputs", "PosX", buffer, ini_file);
+	sprintf(buffer, " %.0f", inputsWidget.position.y);
+	WritePrivateProfileString("Inputs", "PosY", buffer, ini_file);
+
+	// [FPSMeter]
+	WritePrivateProfileString("FPS", "Enabled", fpsWidget.enabled ? "1" : "0", ini_file);
+	sprintf(buffer, " %.0f", fpsWidget.position.x);
+	WritePrivateProfileString("FPS", "PosX", buffer, ini_file);
+	sprintf(buffer, " %.0f", fpsWidget.position.y);
+	WritePrivateProfileString("FPS", "PosY", buffer, ini_file);
 }

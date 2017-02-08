@@ -11,9 +11,10 @@
 #include "Inputs.hpp"
 #include "FPSMeter.hpp"
 #include <d3dx9.h>
+#include <sstream>
 
-#define PLUGIN_NAME					"rF2_V-HUD"
-#define PLUGIN_VERSION				"0.1"
+#define PLUGIN_NAME					"V-HUD"
+#define PLUGIN_VERSION				"0.3"
 
 #if _WIN64
 #define CONFIG_FILE					"Bin64\\Plugins\\VHUD\\VHUD.ini"
@@ -26,11 +27,14 @@
 #define ARIAL						"Arial"
 #define TAHOMA						"Tahoma"
 #define BIG_FONT_SIZE				40
+#define SMALL_FONT_SIZE				17
 
+#define USE_BORDERS					true
 #define BACKGROUND_COLOR			0xFF000000
 #define BORDER_COLOR				0xFFAAAAAA
 
-#define DEFAULT_EDIT_KEY			(0x45)      /* "E" */
+#define DEFAULT_EDIT_KEY			(0x45)      // "E"
+#define DEFAULT_RESET_KEY			(0x52)		// "R"
 #define KEY_DOWN(k)					((GetAsyncKeyState(k) & 0x8000) && (GetAsyncKeyState(VK_CONTROL) & 0x8000))
 
 class VHUD : public InternalsPluginV06
@@ -99,15 +103,20 @@ public:
 	bool MouseIsOver(FPSMeter);
 	void UpdatePositions();
 	void MenuEvents();
+	void ResetPositions(const ScreenInfoV01& info);
+	void LoadConfig(const char *ini_file);
+	void SaveConfig(const char *ini_file);
 
 	// USER VARIABELS
+	int editKey = DEFAULT_EDIT_KEY;
+	int resetKey = DEFAULT_RESET_KEY;
 	bool inRealtime = false;
 	bool inEditMode = false;
 	bool editkeyDownLastFrame = false;
+	bool resetkeyDownLastFrame = false;
 	bool mouseDownLastFrame = false;
 
 private:
-
 	void DrawGraphics(const ScreenInfoV01& info);
 	double mET;  // needed for the hardware example
 	bool mEnabled; // needed for the hardware example

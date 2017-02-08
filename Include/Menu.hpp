@@ -14,7 +14,7 @@ public:
 	void DrawIcon(int slot, LPD3DXSPRITE& sprite, LPDIRECT3DTEXTURE9& texture);
 
 	RECT size = { 0, 0, 686, 74 };
-	D3DXVECTOR3 position = { 200, 200, 0 };
+	D3DXVECTOR3 position = { 0, 150, 0 };
 	D3DCOLOR backgroundColor = 0xFF000000;
 	D3DCOLOR iconColor = 0xFFCCCCCC;
 	D3DCOLOR iconMouseOverColor = 0xFFFFFFFF;

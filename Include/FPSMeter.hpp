@@ -30,7 +30,7 @@ public:
 	RECT size = { 0, 0, 64, 65 };
 	D3DXVECTOR3 position = { 0, 950, 0 };
 	D3DCOLOR backgroundColor = 0xFF000000;
-	D3DCOLOR boarderColor = 0xFFAAAAAA;
+	D3DCOLOR borderColor = 0xFFAAAAAA;
 	LPD3DXFONT bigFont = NULL;
 	D3DXFONT_DESC bigFontDesc = { BIG_FONT_SIZE, 0, 1000, 0, false, DEFAULT_CHARSET, OUT_TT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH, TAHOMA };
 	LPD3DXFONT smallFont = NULL;

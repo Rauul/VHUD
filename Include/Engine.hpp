@@ -29,7 +29,7 @@ public:
 	RECT size = { 0, 0, 171, 65 };
 	D3DXVECTOR3 position = { 0, 740, 0 };
 	D3DCOLOR backgroundColor = 0xFF000000;
-	D3DCOLOR boarderColor = 0xFFAAAAAA;
+	D3DCOLOR borderColor = 0xFFAAAAAA;
 	LPD3DXFONT smallFont = NULL;
 	D3DXFONT_DESC smallFontDesc = { SMALL_FONT_SIZE, 0, 700, 0, false, DEFAULT_CHARSET, OUT_TT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH, TAHOMA };
 	LPD3DXSPRITE iconSprite = NULL;

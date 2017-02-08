@@ -150,13 +150,13 @@ void Fuel::DrawBox(bool inEditMode)
 		// Top
 		boxSprite->Begin(D3DXSPRITE_ALPHABLEND);
 		borderSize.bottom = 1;
-		boxSprite->Draw(boxTexture, &borderSize, NULL, &borderPosition, boarderColor);
+		boxSprite->Draw(boxTexture, &borderSize, NULL, &borderPosition, borderColor);
 		boxSprite->End();
 
 		// Bottom
 		boxSprite->Begin(D3DXSPRITE_ALPHABLEND);
 		borderPosition.y += size.bottom - 1;
-		boxSprite->Draw(boxTexture, &borderSize, NULL, &borderPosition, boarderColor);
+		boxSprite->Draw(boxTexture, &borderSize, NULL, &borderPosition, borderColor);
 		boxSprite->End();
 
 		// Left
@@ -164,13 +164,13 @@ void Fuel::DrawBox(bool inEditMode)
 		borderSize.right = 1;
 		borderSize.bottom = size.bottom - 2;
 		borderPosition.y = position.y + 1;
-		boxSprite->Draw(boxTexture, &borderSize, NULL, &borderPosition, boarderColor);
+		boxSprite->Draw(boxTexture, &borderSize, NULL, &borderPosition, borderColor);
 		boxSprite->End();
 
 		// Right
 		boxSprite->Begin(D3DXSPRITE_ALPHABLEND);
 		borderPosition.x += size.right - 1;
-		boxSprite->Draw(boxTexture, &borderSize, NULL, &borderPosition, boarderColor);
+		boxSprite->Draw(boxTexture, &borderSize, NULL, &borderPosition, borderColor);
 		boxSprite->End();
 	}
 }
