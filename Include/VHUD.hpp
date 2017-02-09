@@ -10,6 +10,7 @@
 #include "Rain.hpp"
 #include "Inputs.hpp"
 #include "FPSMeter.hpp"
+#include "StartingLights.hpp"
 #include <d3dx9.h>
 #include <sstream>
 
@@ -100,7 +101,8 @@ public:
 	bool MouseIsOver(Engine);
 	bool MouseIsOver(Rain);
 	bool MouseIsOver(Inputs);
-	bool MouseIsOver(FPSMeter);
+	bool MouseIsOver(FPSMeter); 
+	bool MouseIsOver(StartingLights);
 	void UpdatePositions();
 	void MenuEvents();
 	void ResetPositions(const ScreenInfoV01& info);

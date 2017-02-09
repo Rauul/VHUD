@@ -47,6 +47,7 @@ Engine engineWidget;
 Rain rainWidget;
 Inputs inputsWidget;
 FPSMeter fpsWidget;
+StartingLights lightsWidget;
 Menu menu;
 Cursor cursor;
 
@@ -67,6 +68,7 @@ void VHUD::Shutdown()
 
 void VHUD::StartSession()
 {
+	lightsWidget.ResetLights();
 }
 
 
@@ -76,7 +78,7 @@ void VHUD::EndSession()
 
 void VHUD::Load()
 {
-	fuelWidget.ResetFuelUsage();
+	fuelWidget.ResetFuelUsage();	
 }
 
 
@@ -128,6 +130,7 @@ void VHUD::UpdateScoring(const ScoringInfoV01& info)
 		return;
 
 	rainWidget.Update(info);
+	lightsWidget.Update(info);
 }
 
 void VHUD::InitScreen(const ScreenInfoV01& info)
@@ -140,6 +143,7 @@ void VHUD::InitScreen(const ScreenInfoV01& info)
 	rainWidget.Init(info);
 	inputsWidget.Init(info);
 	fpsWidget.Init(info);
+	lightsWidget.Init(info);
 
 	LoadConfig(CONFIG_FILE);
 }
@@ -154,6 +158,7 @@ void VHUD::UninitScreen(const ScreenInfoV01& info)
 	rainWidget.Uninit(info);
 	inputsWidget.Uninit(info);
 	fpsWidget.Uninit(info);
+	lightsWidget.Uninit(info);
 }
 
 void VHUD::RenderScreenBeforeOverlays(const ScreenInfoV01& info)
@@ -180,6 +185,7 @@ void VHUD::PreReset(const ScreenInfoV01& info)
 	rainWidget.PreReset(info);
 	inputsWidget.PreReset(info);
 	fpsWidget.PreReset(info);
+	lightsWidget.PreReset(info);
 }
 
 void VHUD::PostReset(const ScreenInfoV01& info)
@@ -192,6 +198,7 @@ void VHUD::PostReset(const ScreenInfoV01& info)
 	rainWidget.PostReset(info);
 	inputsWidget.PostReset(info);
 	fpsWidget.PostReset(info);
+	lightsWidget.PostReset(info);
 }
 
 void VHUD::DrawGraphics(const ScreenInfoV01& info)
@@ -205,6 +212,7 @@ void VHUD::DrawGraphics(const ScreenInfoV01& info)
 	rainWidget.Draw(inEditMode);
 	inputsWidget.Draw(inEditMode);
 	fpsWidget.Draw(inEditMode);
+	lightsWidget.Draw(inEditMode);
 	cursor.Draw(inEditMode);
 }
 
@@ -272,6 +280,15 @@ bool VHUD::MouseIsOver(FPSMeter)
 		return false;
 }
 
+bool VHUD::MouseIsOver(StartingLights)
+{
+	if (cursor.position.y >= lightsWidget.position.y && cursor.position.y <= lightsWidget.position.y + lightsWidget.size.bottom &&
+		cursor.position.x >= lightsWidget.position.x && cursor.position.x <= lightsWidget.position.x + lightsWidget.size.right)
+		return true;
+	else
+		return false;
+}
+
 void VHUD::UpdatePositions()
 {
 	if (!inEditMode)
@@ -308,6 +325,11 @@ void VHUD::UpdatePositions()
 		{
 			cursor.lockedTo = Cursor::LockedTo::FPSMeter;
 			fpsWidget.UpdatePosition();
+		}
+		else if (MouseIsOver(lightsWidget) && (cursor.lockedTo == Cursor::LockedTo::StartingLights || cursor.lockedTo == Cursor::LockedTo::None))
+		{
+			cursor.lockedTo = Cursor::LockedTo::StartingLights;
+			lightsWidget.UpdatePosition();
 		}
 	}
 	else
@@ -433,6 +455,24 @@ void VHUD::MenuEvents()
 				mouseDownLastFrame = false;
 			}
 		}
+		else if (cursor.position.y >= menu.position.y + 5 && cursor.position.y <= menu.position.y + 69 &&
+			cursor.position.x >= menu.position.x + 5 + 68 * 6 && cursor.position.x <= menu.position.x + 69 + 68 * 6)
+		{
+			menu.mouseInSlot = 6;
+
+			if ((GetKeyState(VK_LBUTTON) & 0x100) != 0)
+			{
+				if (!mouseDownLastFrame)
+				{
+					lightsWidget.enabled = !lightsWidget.enabled;
+				}
+				mouseDownLastFrame = true;
+			}
+			else
+			{
+				mouseDownLastFrame = false;
+			}
+		}
 	}
 }
 
@@ -461,14 +501,16 @@ void VHUD::ResetPositions(const ScreenInfoV01& info)
 	inputsWidget.position = { screenCenter, y, 0 };
 	y += 70;
 	fpsWidget.position = { screenCenter, y, 0 };
+	y += 70;
+	lightsWidget.position = { screenCenter, y, 0 };
 }
 
 void VHUD::LoadConfig(const char * ini_file)
 {
 	// [Config]
 	fuelWidget.useBorder = tyresWidget.useBorder = engineWidget.useBorder = rainWidget.useBorder = inputsWidget.useBorder = fpsWidget.useBorder = GetPrivateProfileInt("Config", "Borders", USE_BORDERS, ini_file);
-	fuelWidget.backgroundColor = tyresWidget.backgroundColor = engineWidget.backgroundColor = rainWidget.backgroundColor = inputsWidget.backgroundColor = fpsWidget.backgroundColor = GetPrivateProfileInt("Config", "BackgroundColor", BACKGROUND_COLOR, ini_file);
-	fuelWidget.borderColor = tyresWidget.borderColor = engineWidget.borderColor = rainWidget.borderColor = inputsWidget.borderColor = fpsWidget.borderColor = GetPrivateProfileInt("Config", "BorderColor", BORDER_COLOR, ini_file);
+	fuelWidget.backgroundColor = tyresWidget.backgroundColor = engineWidget.backgroundColor = rainWidget.backgroundColor = inputsWidget.backgroundColor = fpsWidget.backgroundColor = lightsWidget.backgroundColor = GetPrivateProfileInt("Config", "BackgroundColor", BACKGROUND_COLOR, ini_file);
+	fuelWidget.borderColor = tyresWidget.borderColor = engineWidget.borderColor = rainWidget.borderColor = inputsWidget.borderColor = fpsWidget.borderColor = lightsWidget.borderColor = GetPrivateProfileInt("Config", "BorderColor", BORDER_COLOR, ini_file);
 
 	// [Input]
 	editKey = GetPrivateProfileInt("Input", "EditKey", DEFAULT_EDIT_KEY, ini_file);

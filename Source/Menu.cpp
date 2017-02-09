@@ -11,6 +11,7 @@ void Menu::Init(const ScreenInfoV01 & info)
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &rainIconSprite);
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &inputsIconSprite);
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &fpsIconSprite);
+	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &lightIconSprite);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, BACKGROUND_TEXTURE, &boxTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, FUEL_ICON, &fuelIconTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, TYRES_ICON, &tyresIconTexture);
@@ -18,8 +19,10 @@ void Menu::Init(const ScreenInfoV01 & info)
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, RAIN_ICON, &rainIconTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, INPUTS_ICON, &inputsIconTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, FPS_ICON, &fpsIconTexture);
+	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, STARTINGLIGHTS_ICON, &lightIconTexture);
 
 	position.x = info.mWidth / 2 - size.right / 2;
+	position.y = info.mHeight / 2 - size.bottom / 2;
 }
 
 void Menu::Uninit(const ScreenInfoV01 & info)
@@ -80,6 +83,14 @@ void Menu::Uninit(const ScreenInfoV01 & info)
 		fpsIconSprite->Release();
 		fpsIconSprite = NULL;
 	}
+	if (lightIconTexture) {
+		lightIconTexture->Release();
+		lightIconTexture = NULL;
+	}
+	if (lightIconSprite) {
+		lightIconSprite->Release();
+		lightIconSprite = NULL;
+	}
 }
 
 void Menu::PreReset(const ScreenInfoV01 & info)
@@ -96,6 +107,8 @@ void Menu::PreReset(const ScreenInfoV01 & info)
 		inputsIconSprite->OnLostDevice();
 	if (fpsIconSprite)
 		fpsIconSprite->OnLostDevice();
+	if (lightIconSprite)
+		lightIconSprite->OnLostDevice();
 	if (boxSprite)
 		boxSprite->OnLostDevice();
 }
@@ -114,6 +127,8 @@ void Menu::PostReset(const ScreenInfoV01 & info)
 		inputsIconSprite->OnResetDevice();
 	if (fpsIconSprite)
 		fpsIconSprite->OnResetDevice();
+	if (lightIconSprite)
+		lightIconSprite->OnResetDevice();
 	if (boxSprite)
 		boxSprite->OnResetDevice();
 }
@@ -130,8 +145,8 @@ void Menu::Draw(bool inEditMode)
 	DrawIcon(3, rainIconSprite, rainIconTexture);
 	DrawIcon(4, inputsIconSprite, inputsIconTexture);
 	DrawIcon(5, fpsIconSprite, fpsIconTexture);
-	/*DrawIcon(6, fuelIconSprite, fuelIconTexture);
-	DrawIcon(7, fuelIconSprite, fuelIconTexture);
+	DrawIcon(6, lightIconSprite, lightIconTexture);
+	/*DrawIcon(7, fuelIconSprite, fuelIconTexture);
 	DrawIcon(8, fuelIconSprite, fuelIconTexture);
 	DrawIcon(9, fuelIconSprite, fuelIconTexture);*/
 }

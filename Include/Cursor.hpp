@@ -33,7 +33,8 @@ public:
 		Engine,
 		Rain,
 		Inputs,
-		FPSMeter
+		FPSMeter,
+		StartingLights
 	};
 
 	LockedTo lockedTo = LockedTo::None;

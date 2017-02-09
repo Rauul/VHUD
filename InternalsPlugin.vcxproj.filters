@@ -34,6 +34,9 @@
     <ClInclude Include="Include\FPSMeter.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\StartingLights.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sourse Files">
@@ -71,6 +74,9 @@
       <Filter>Sourse Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\FPSMeter.cpp">
+      <Filter>Sourse Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\StartingLights.cpp">
       <Filter>Sourse Files</Filter>
     </ClCompile>
   </ItemGroup>
