@@ -1,6 +1,7 @@
 #pragma once
 
 #include "InternalsPlugin.hpp"
+#include "Defaults.hpp"
 #include <d3dx9.h>
 
 #if _WIN64
@@ -8,9 +9,6 @@
 #else
 #define ENGINE_ICON				"Bin32\\Plugins\\VHUD\\Images\\Engine.png"
 #endif
-
-#define TAHOMA						"Tahoma"
-#define SMALL_FONT_SIZE				17
 
 class Engine
 {
@@ -31,7 +29,7 @@ public:
 	D3DCOLOR backgroundColor = 0xFF000000;
 	D3DCOLOR borderColor = 0xFFAAAAAA;
 	LPD3DXFONT smallFont = NULL;
-	D3DXFONT_DESC smallFontDesc = { SMALL_FONT_SIZE, 0, 700, 0, false, DEFAULT_CHARSET, OUT_TT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH, TAHOMA };
+	D3DXFONT_DESC smallFontDesc = { SMALL_FONT_SIZE, 0, 700, 0, false, DEFAULT_CHARSET, OUT_TT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH, SMALL_FONT };
 	LPD3DXSPRITE iconSprite = NULL;
 	LPDIRECT3DTEXTURE9 iconTexture = NULL;
 	LPD3DXSPRITE boxSprite = NULL;

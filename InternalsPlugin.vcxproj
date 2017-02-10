@@ -277,6 +277,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Defaults.hpp" />
     <ClInclude Include="Include\Cursor.hpp" />
     <ClInclude Include="Include\Engine.hpp" />
     <ClInclude Include="Include\FPSMeter.hpp" />

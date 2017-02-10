@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef _INTERNALS_EXAMPLE_H
 #define _INTERNALS_EXAMPLE_H
 
@@ -24,11 +26,6 @@
 #define CONFIG_FILE					"Bin32\\Plugins\\VHUD\\VHUD.ini"
 #define BACKGROUND_TEXTURE			"Bin32\\Plugins\\VHUD\\Images\\Background.png"
 #endif
-
-#define ARIAL						"Arial"
-#define TAHOMA						"Tahoma"
-#define BIG_FONT_SIZE				40
-#define SMALL_FONT_SIZE				17
 
 #define USE_BORDERS					true
 #define BACKGROUND_COLOR			0xFF000000
