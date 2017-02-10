@@ -11,8 +11,11 @@
 #define STARTINGLIGHT_GREEN			"Bin64\\Plugins\\VHUD\\Images\\SL_green.png"
 #define STARTINGLIGHT_YELLOW		"Bin64\\Plugins\\VHUD\\Images\\SL_yellow.png"
 #else
-#define STARTINGLIGHTS_ICON			"Bin32\\Plugins\\VHUD\\Images\\StartingLightsIcon.png"
-#define STARTINGLIGHTS_TEXTURE		"Bin32\\Plugins\\VHUD\\Images\\StartingLights.png"
+#define STARTINGLIGHTS_ICON			"Bin32\\Plugins\\VHUD\\Images\\StartingLights.png"
+#define STARTINGLIGHT_OFF			"Bin32\\Plugins\\VHUD\\Images\\SL_off.png"
+#define STARTINGLIGHT_RED			"Bin32\\Plugins\\VHUD\\Images\\SL_red.png"
+#define STARTINGLIGHT_GREEN			"Bin32\\Plugins\\VHUD\\Images\\SL_green.png"
+#define STARTINGLIGHT_YELLOW		"Bin32\\Plugins\\VHUD\\Images\\SL_yellow.png"
 #endif
 
 class StartingLights
@@ -27,7 +30,6 @@ public:
 	void Update(const TelemInfoV01& info);
 	void UpdatePosition();
 	void Draw(bool inEditMode);
-	void DrawBox(bool inEditMode);
 	void DrawLights(bool inEditMode);
 
 	RECT size = { 0, 0, 400, 90 };
@@ -46,10 +48,9 @@ public:
 	LPDIRECT3DTEXTURE9 boxTexture = NULL;
 	int numLights = 0;
 	int numRedLights = 0;
-	long ID = 0;
+	int playerSlot = -1;
 	bool inPits = false;
 	bool showLights = false;
-	bool numLightsSet = false;
 	bool useBorder = true;
 	bool enabled = true;
 

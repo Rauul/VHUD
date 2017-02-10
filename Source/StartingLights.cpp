@@ -100,7 +100,20 @@ void StartingLights::Update(const ScoringInfoV01 & info)
 {
 	numLights = info.mStartLight;
 	numRedLights = info.mNumRedLights;
-	inPits = info.mVehicle[ID].mInPits;
+	
+	if (playerSlot < 0 || info.mVehicle[playerSlot].mControl != 0)
+	{
+		for (long i = 0; i < info.mNumVehicles; i++)
+		{
+			if (info.mVehicle[i].mControl == 0)
+			{
+				playerSlot = i;
+				break;
+			}
+		}
+	}
+
+	inPits = info.mVehicle[playerSlot].mInPits;
 
 	if (info.mGamePhase == 4 || inPits || ( info.mGamePhase == 5 && info.mSession > 9 && numLights > numRedLights))
 		showLights = true;
@@ -110,7 +123,7 @@ void StartingLights::Update(const ScoringInfoV01 & info)
 
 void StartingLights::Update(const TelemInfoV01 & info)
 {
-	ID = info.mID;
+	return;
 }
 
 void StartingLights::UpdatePosition()
@@ -133,45 +146,6 @@ void StartingLights::Draw(bool inEditMode)
 
 	if (showLights || inEditMode)
 		DrawLights(inEditMode);
-}
-
-void StartingLights::DrawBox(bool inEditMode)
-{
-	if (inEditMode)
-	{
-		boxSprite->Begin(D3DXSPRITE_ALPHABLEND);
-		boxSprite->Draw(boxTexture, &size, NULL, &position, backgroundColor);
-		boxSprite->End();
-
-		RECT borderSize = size;
-		D3DXVECTOR3 borderPosition = position;
-
-		// Top
-		boxSprite->Begin(D3DXSPRITE_ALPHABLEND);
-		borderSize.bottom = 1;
-		boxSprite->Draw(boxTexture, &borderSize, NULL, &borderPosition, borderColor);
-		boxSprite->End();
-
-		// Bottom
-		boxSprite->Begin(D3DXSPRITE_ALPHABLEND);
-		borderPosition.y += size.bottom - 1;
-		boxSprite->Draw(boxTexture, &borderSize, NULL, &borderPosition, borderColor);
-		boxSprite->End();
-
-		// Left
-		boxSprite->Begin(D3DXSPRITE_ALPHABLEND);
-		borderSize.right = 1;
-		borderSize.bottom = size.bottom - 2;
-		borderPosition.y = position.y + 1;
-		boxSprite->Draw(boxTexture, &borderSize, NULL, &borderPosition, borderColor);
-		boxSprite->End();
-
-		// Right
-		boxSprite->Begin(D3DXSPRITE_ALPHABLEND);
-		borderPosition.x += size.right - 1;
-		boxSprite->Draw(boxTexture, &borderSize, NULL, &borderPosition, borderColor);
-		boxSprite->End();
-	}
 }
 
 void StartingLights::DrawLights(bool inEditMode)

@@ -15,7 +15,7 @@
 #include <sstream>
 
 #define PLUGIN_NAME					"V-HUD"
-#define PLUGIN_VERSION				"0.3"
+#define PLUGIN_VERSION				"0.5"
 
 #if _WIN64
 #define CONFIG_FILE					"Bin64\\Plugins\\VHUD\\VHUD.ini"

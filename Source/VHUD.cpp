@@ -509,8 +509,8 @@ void VHUD::LoadConfig(const char * ini_file)
 {
 	// [Config]
 	fuelWidget.useBorder = tyresWidget.useBorder = engineWidget.useBorder = rainWidget.useBorder = inputsWidget.useBorder = fpsWidget.useBorder = GetPrivateProfileInt("Config", "Borders", USE_BORDERS, ini_file);
-	fuelWidget.backgroundColor = tyresWidget.backgroundColor = engineWidget.backgroundColor = rainWidget.backgroundColor = inputsWidget.backgroundColor = fpsWidget.backgroundColor = lightsWidget.backgroundColor = GetPrivateProfileInt("Config", "BackgroundColor", BACKGROUND_COLOR, ini_file);
-	fuelWidget.borderColor = tyresWidget.borderColor = engineWidget.borderColor = rainWidget.borderColor = inputsWidget.borderColor = fpsWidget.borderColor = lightsWidget.borderColor = GetPrivateProfileInt("Config", "BorderColor", BORDER_COLOR, ini_file);
+	fuelWidget.backgroundColor = tyresWidget.backgroundColor = engineWidget.backgroundColor = rainWidget.backgroundColor = inputsWidget.backgroundColor = fpsWidget.backgroundColor = GetPrivateProfileInt("Config", "BackgroundColor", BACKGROUND_COLOR, ini_file);
+	fuelWidget.borderColor = tyresWidget.borderColor = engineWidget.borderColor = rainWidget.borderColor = inputsWidget.borderColor = fpsWidget.borderColor = GetPrivateProfileInt("Config", "BorderColor", BORDER_COLOR, ini_file);
 
 	// [Input]
 	editKey = GetPrivateProfileInt("Input", "EditKey", DEFAULT_EDIT_KEY, ini_file);
@@ -541,10 +541,15 @@ void VHUD::LoadConfig(const char * ini_file)
 	inputsWidget.position.x = GetPrivateProfileInt("Inputs", "PosX", inputsWidget.position.x, ini_file);
 	inputsWidget.position.y = GetPrivateProfileInt("Inputs", "PosY", inputsWidget.position.y, ini_file);
 
-	// [PFSMeter]
+	// [FPSMeter]
 	fpsWidget.enabled = GetPrivateProfileInt("FPS", "Enabled", true, ini_file);
 	fpsWidget.position.x = GetPrivateProfileInt("FPS", "PosX", fpsWidget.position.x, ini_file);
 	fpsWidget.position.y = GetPrivateProfileInt("FPS", "PosY", fpsWidget.position.y, ini_file);
+
+	// [StartingLights]
+	lightsWidget.enabled = GetPrivateProfileInt("StartingLights", "Enabled", true, ini_file);
+	lightsWidget.position.x = GetPrivateProfileInt("StartingLights", "PosX", lightsWidget.position.x, ini_file);
+	lightsWidget.position.y = GetPrivateProfileInt("StartingLights", "PosY", lightsWidget.position.y, ini_file);
 }
 
 void VHUD::SaveConfig(const char *ini_file)
@@ -595,4 +600,11 @@ void VHUD::SaveConfig(const char *ini_file)
 	WritePrivateProfileString("FPS", "PosX", buffer, ini_file);
 	sprintf(buffer, " %.0f", fpsWidget.position.y);
 	WritePrivateProfileString("FPS", "PosY", buffer, ini_file);
+
+	// [StartingLights]
+	WritePrivateProfileString("StartingLights", "Enabled", lightsWidget.enabled ? "1" : "0", ini_file);
+	sprintf(buffer, " %.0f", lightsWidget.position.x);
+	WritePrivateProfileString("StartingLights", "PosX", buffer, ini_file);
+	sprintf(buffer, " %.0f", lightsWidget.position.y);
+	WritePrivateProfileString("StartingLights", "PosY", buffer, ini_file);
 }
