@@ -100,6 +100,7 @@ public:
 	bool MouseIsOver(Inputs);
 	bool MouseIsOver(FPSMeter); 
 	bool MouseIsOver(StartingLights);
+	bool PlayerIsInControl(const ScoringInfoV01& info);
 	void UpdatePositions();
 	void MenuEvents();
 	void ResetPositions(const ScreenInfoV01& info);
@@ -114,6 +115,7 @@ public:
 	bool editkeyDownLastFrame = false;
 	bool resetkeyDownLastFrame = false;
 	bool mouseDownLastFrame = false;
+	bool playerIsInControl = false;
 
 private:
 	void DrawGraphics(const ScreenInfoV01& info);

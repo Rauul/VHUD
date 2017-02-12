@@ -100,9 +100,9 @@ void VHUD::ExitRealtime()
 
 void VHUD::UpdateTelemetry(const TelemInfoV01& info)
 {
-	if (!inRealtime)
+	if (!inRealtime || !playerIsInControl)
 		return;
-
+	
 	if (KEY_DOWN(editKey))
 	{
 		if (!editkeyDownLastFrame)
@@ -126,9 +126,12 @@ void VHUD::UpdateTelemetry(const TelemInfoV01& info)
 
 void VHUD::UpdateScoring(const ScoringInfoV01& info)
 {
-	if (!inRealtime)
-		return;
+	inRealtime = info.mInRealtime;
+	playerIsInControl = PlayerIsInControl(info);
 
+	if (!inRealtime || !playerIsInControl)
+		return;
+	
 	rainWidget.Update(info);
 	lightsWidget.Update(info);
 }
@@ -163,7 +166,7 @@ void VHUD::UninitScreen(const ScreenInfoV01& info)
 
 void VHUD::RenderScreenBeforeOverlays(const ScreenInfoV01& info)
 {
-	if (!inRealtime)
+	if (!inRealtime || !playerIsInControl)
 		return;
 
 	if (inEditMode && KEY_DOWN(resetKey))
@@ -287,6 +290,16 @@ bool VHUD::MouseIsOver(StartingLights)
 		return true;
 	else
 		return false;
+}
+
+bool VHUD::PlayerIsInControl(const ScoringInfoV01 & info)
+{
+	for (long i = 0; i < info.mNumVehicles; ++i)
+	{
+		if (info.mVehicle[i].mControl < 2)
+			return true;
+	}
+	return false;
 }
 
 void VHUD::UpdatePositions()

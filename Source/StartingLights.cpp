@@ -151,7 +151,7 @@ void StartingLights::Draw(bool inEditMode)
 void StartingLights::DrawLights(bool inEditMode)
 {
 	RECT rect = { 0, 0, 128, 128 };
-	D3DCOLOR color = 0xAAFFFFFF;
+	D3DCOLOR color = 0xDDFFFFFF;
 	D3DXVECTOR3 pos = position;
 
 	pos.x += size.right / 2;
