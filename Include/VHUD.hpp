@@ -17,7 +17,7 @@
 #include <sstream>
 
 #define PLUGIN_NAME					"V-HUD"
-#define PLUGIN_VERSION				"0.5"
+#define PLUGIN_VERSION				"0.71"
 
 #if _WIN64
 #define CONFIG_FILE					"Bin64\\Plugins\\VHUD\\VHUD.ini"
@@ -110,6 +110,7 @@ public:
 	// USER VARIABELS
 	int editKey = DEFAULT_EDIT_KEY;
 	int resetKey = DEFAULT_RESET_KEY;
+	long playerSlot = 0;
 	bool inRealtime = false;
 	bool inEditMode = false;
 	bool editkeyDownLastFrame = false;

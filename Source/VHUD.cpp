@@ -294,10 +294,16 @@ bool VHUD::MouseIsOver(StartingLights)
 
 bool VHUD::PlayerIsInControl(const ScoringInfoV01 & info)
 {
+	if (info.mVehicle[playerSlot].mControl == 0)
+		return true;
+
 	for (long i = 0; i < info.mNumVehicles; ++i)
 	{
-		if (info.mVehicle[i].mControl < 2)
+		if (info.mVehicle[i].mControl == 0)
+		{
+			playerSlot = i;
 			return true;
+		}
 	}
 	return false;
 }
