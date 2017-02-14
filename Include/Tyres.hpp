@@ -24,7 +24,7 @@ public:
 	void DrawIcon();
 	void DrawTxt();
 
-	RECT size = { 0, 0, 171, 65 };
+	RECT size = { 0, 0, 170, 65 };
 	D3DXVECTOR3 position = { 0, 670, 0 };
 	D3DCOLOR backgroundColor = 0xFF000000;
 	D3DCOLOR borderColor = 0xFFAAAAAA;

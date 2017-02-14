@@ -100,7 +100,7 @@ public:
 	bool MouseIsOver(Inputs);
 	bool MouseIsOver(FPSMeter); 
 	bool MouseIsOver(StartingLights);
-	bool PlayerIsInControl(const ScoringInfoV01& info);
+	bool IsPlayer(const ScoringInfoV01& info);
 	void UpdatePositions();
 	void MenuEvents();
 	void ResetPositions(const ScreenInfoV01& info);
@@ -111,12 +111,13 @@ public:
 	int editKey = DEFAULT_EDIT_KEY;
 	int resetKey = DEFAULT_RESET_KEY;
 	long playerSlot = 0;
+	float screenCenter = 0;
 	bool inRealtime = false;
 	bool inEditMode = false;
 	bool editkeyDownLastFrame = false;
 	bool resetkeyDownLastFrame = false;
 	bool mouseDownLastFrame = false;
-	bool playerIsInControl = false;
+	bool isPlayer = false;
 
 private:
 	void DrawGraphics(const ScreenInfoV01& info);
