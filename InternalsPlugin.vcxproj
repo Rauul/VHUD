@@ -98,7 +98,9 @@
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
-    <IncludePath>.\Include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Martin\Documents\GitHub\VHUD\Include;$(IncludePath)</IncludePath>
+    <IncludePath>.\Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Program Files (x86)\Microsoft SDKs\Windows\V7.1A\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(VCInstallDir)bin\x86_amd64;$(VCInstallDir)bin;$(WindowsSdkDir)bin\NETFX 4.0 Tools;$(WindowsSdkDir)bin;$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;$(ProgramFiles)\HTML Help Workshop;$(FrameworkSDKDir)\bin;$(MSBuildToolsPath32);$(VSInstallDir);$(SystemRoot)\SysWow64;$(FxCopDir);$(PATH);$(WindowsSDK_BinPath);$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -242,7 +244,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;INTERNALSPLUGIN_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -282,6 +284,7 @@
     <ClInclude Include="Include\Engine.hpp" />
     <ClInclude Include="Include\FPSMeter.hpp" />
     <ClInclude Include="Include\Fuel.hpp" />
+    <ClInclude Include="Include\Gear.hpp" />
     <ClInclude Include="Include\Inputs.hpp" />
     <ClInclude Include="Include\InternalsPlugin.hpp" />
     <ClInclude Include="Include\Menu.hpp" />
@@ -296,6 +299,7 @@
     <ClCompile Include="Source\Engine.cpp" />
     <ClCompile Include="Source\FPSMeter.cpp" />
     <ClCompile Include="Source\Fuel.cpp" />
+    <ClCompile Include="Source\Gear.cpp" />
     <ClCompile Include="Source\Inputs.cpp" />
     <ClCompile Include="Source\Menu.cpp" />
     <ClCompile Include="Source\StartingLights.cpp" />

@@ -13,6 +13,7 @@
 #include "Inputs.hpp"
 #include "FPSMeter.hpp"
 #include "StartingLights.hpp"
+#include "Gear.hpp"
 #include <d3dx9.h>
 #include <sstream>
 
@@ -100,6 +101,7 @@ public:
 	bool MouseIsOver(Inputs);
 	bool MouseIsOver(FPSMeter); 
 	bool MouseIsOver(StartingLights);
+	bool MouseIsOver(Gear);
 	bool IsPlayer(const ScoringInfoV01& info);
 	void UpdatePositions();
 	void MenuEvents();

@@ -12,6 +12,7 @@ void Menu::Init(const ScreenInfoV01 & info)
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &inputsIconSprite);
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &fpsIconSprite);
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &lightIconSprite);
+	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &gearIconSprite);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, BACKGROUND_TEXTURE, &boxTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, FUEL_ICON, &fuelIconTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, TYRES_ICON, &tyresIconTexture);
@@ -20,6 +21,7 @@ void Menu::Init(const ScreenInfoV01 & info)
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, INPUTS_ICON, &inputsIconTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, FPS_ICON, &fpsIconTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, STARTINGLIGHTS_ICON, &lightIconTexture);
+	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, GEAR_ICON, &gearIconTexture);
 
 	position.x = info.mWidth / 2 - size.right / 2;
 	position.y = info.mHeight / 2 - size.bottom / 2;
@@ -91,6 +93,14 @@ void Menu::Uninit(const ScreenInfoV01 & info)
 		lightIconSprite->Release();
 		lightIconSprite = NULL;
 	}
+	if (gearIconTexture) {
+		gearIconTexture->Release();
+		gearIconTexture = NULL;
+	}
+	if (gearIconSprite) {
+		gearIconSprite->Release();
+		gearIconSprite = NULL;
+	}
 }
 
 void Menu::PreReset(const ScreenInfoV01 & info)
@@ -109,6 +119,8 @@ void Menu::PreReset(const ScreenInfoV01 & info)
 		fpsIconSprite->OnLostDevice();
 	if (lightIconSprite)
 		lightIconSprite->OnLostDevice();
+	if (gearIconSprite)
+		gearIconSprite->OnLostDevice();
 	if (boxSprite)
 		boxSprite->OnLostDevice();
 }
@@ -129,6 +141,8 @@ void Menu::PostReset(const ScreenInfoV01 & info)
 		fpsIconSprite->OnResetDevice();
 	if (lightIconSprite)
 		lightIconSprite->OnResetDevice();
+	if (gearIconSprite)
+		gearIconSprite->OnResetDevice();
 	if (boxSprite)
 		boxSprite->OnResetDevice();
 }
@@ -146,8 +160,8 @@ void Menu::Draw(bool inEditMode)
 	DrawIcon(4, inputsIconSprite, inputsIconTexture);
 	DrawIcon(5, fpsIconSprite, fpsIconTexture);
 	DrawIcon(6, lightIconSprite, lightIconTexture);
-	/*DrawIcon(7, fuelIconSprite, fuelIconTexture);
-	DrawIcon(8, fuelIconSprite, fuelIconTexture);
+	DrawIcon(7, gearIconSprite, gearIconTexture);
+	/*DrawIcon(8, fuelIconSprite, fuelIconTexture);
 	DrawIcon(9, fuelIconSprite, fuelIconTexture);*/
 }
 

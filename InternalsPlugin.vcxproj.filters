@@ -40,6 +40,9 @@
     <ClInclude Include="Include\Defaults.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Gear.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sourse Files">
@@ -80,6 +83,9 @@
       <Filter>Sourse Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\StartingLights.cpp">
+      <Filter>Sourse Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Gear.cpp">
       <Filter>Sourse Files</Filter>
     </ClCompile>
   </ItemGroup>

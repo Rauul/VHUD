@@ -48,6 +48,7 @@ Rain rainWidget;
 Inputs inputsWidget;
 FPSMeter fpsWidget;
 StartingLights lightsWidget;
+Gear gearWidget;
 Menu menu;
 Cursor cursor;
 
@@ -122,6 +123,7 @@ void VHUD::UpdateTelemetry(const TelemInfoV01& info)
 	tyresWidget.Update(info);
 	engineWidget.Update(info);
 	inputsWidget.Update(info);
+	gearWidget.Update(info);
 }
 
 void VHUD::UpdateScoring(const ScoringInfoV01& info)
@@ -149,6 +151,7 @@ void VHUD::InitScreen(const ScreenInfoV01& info)
 	inputsWidget.Init(info);
 	fpsWidget.Init(info);
 	lightsWidget.Init(info);
+	gearWidget.Init(info);
 
 	LoadConfig(CONFIG_FILE);
 }
@@ -164,6 +167,7 @@ void VHUD::UninitScreen(const ScreenInfoV01& info)
 	inputsWidget.Uninit(info);
 	fpsWidget.Uninit(info);
 	lightsWidget.Uninit(info);
+	gearWidget.Uninit(info);
 }
 
 void VHUD::RenderScreenBeforeOverlays(const ScreenInfoV01& info)
@@ -191,6 +195,7 @@ void VHUD::PreReset(const ScreenInfoV01& info)
 	inputsWidget.PreReset(info);
 	fpsWidget.PreReset(info);
 	lightsWidget.PreReset(info);
+	gearWidget.PreReset(info);
 }
 
 void VHUD::PostReset(const ScreenInfoV01& info)
@@ -204,6 +209,7 @@ void VHUD::PostReset(const ScreenInfoV01& info)
 	inputsWidget.PostReset(info);
 	fpsWidget.PostReset(info);
 	lightsWidget.PostReset(info);
+	gearWidget.PostReset(info);
 }
 
 void VHUD::DrawGraphics(const ScreenInfoV01& info)
@@ -218,6 +224,7 @@ void VHUD::DrawGraphics(const ScreenInfoV01& info)
 	inputsWidget.Draw(inEditMode);
 	fpsWidget.Draw(inEditMode);
 	lightsWidget.Draw(inEditMode);
+	gearWidget.Draw(inEditMode);
 	cursor.Draw(inEditMode);
 }
 
@@ -294,8 +301,20 @@ bool VHUD::MouseIsOver(StartingLights)
 		return false;
 }
 
+bool VHUD::MouseIsOver(Gear)
+{
+	if (cursor.position.y >= gearWidget.position.y && cursor.position.y <= gearWidget.position.y + gearWidget.size.bottom &&
+		cursor.position.x >= gearWidget.position.x && cursor.position.x <= gearWidget.position.x + gearWidget.size.right)
+		return true;
+	else
+		return false;
+}
+
 bool VHUD::IsPlayer(const ScoringInfoV01 & info)
 {
+	if (info.mNumVehicles < 1)
+		return false;
+
 	if (info.mVehicle[playerSlot].mIsPlayer)
 		return true;
 
@@ -351,6 +370,11 @@ void VHUD::UpdatePositions()
 		{
 			cursor.lockedTo = Cursor::LockedTo::StartingLights;
 			lightsWidget.UpdatePosition();
+		}
+		else if (MouseIsOver(gearWidget) && (cursor.lockedTo == Cursor::LockedTo::Gear || cursor.lockedTo == Cursor::LockedTo::None))
+		{
+			cursor.lockedTo = Cursor::LockedTo::Gear;
+			gearWidget.UpdatePosition();
 		}
 	}
 	else
@@ -494,6 +518,24 @@ void VHUD::MenuEvents()
 				mouseDownLastFrame = false;
 			}
 		}
+		else if (cursor.position.y >= menu.position.y + 5 && cursor.position.y <= menu.position.y + 69 &&
+			cursor.position.x >= menu.position.x + 5 + 68 * 7 && cursor.position.x <= menu.position.x + 69 + 68 * 7)
+		{
+			menu.mouseInSlot = 7;
+
+			if ((GetKeyState(VK_LBUTTON) & 0x100) != 0)
+			{
+				if (!mouseDownLastFrame)
+				{
+					gearWidget.enabled = !gearWidget.enabled;
+				}
+				mouseDownLastFrame = true;
+			}
+			else
+			{
+				mouseDownLastFrame = false;
+			}
+		}
 	}
 }
 
@@ -509,7 +551,9 @@ LPCSTR ConvertFloatToLPCSTR(float input)
 
 void VHUD::ResetPositions(const ScreenInfoV01& info)
 {
-	float y = info.mHeight * 0.1;
+	float y = info.mHeight * 0.15;
+	lightsWidget.position = { screenCenter, y, 0 };
+	y += 128;
 	fuelWidget.position = { screenCenter, y, 0 };
 	y += 65;
 	tyresWidget.position = { screenCenter, y, 0 };
@@ -522,15 +566,18 @@ void VHUD::ResetPositions(const ScreenInfoV01& info)
 	y += 65;
 	fpsWidget.position = { screenCenter, y, 0 };
 	y += 65;
-	lightsWidget.position = { screenCenter, y, 0 };
+	gearWidget.position = { screenCenter, y, 0 };
 }
 
 void VHUD::LoadConfig(const char * ini_file)
 {
 	// [Config]
-	fuelWidget.useBorder = tyresWidget.useBorder = engineWidget.useBorder = rainWidget.useBorder = inputsWidget.useBorder = fpsWidget.useBorder = GetPrivateProfileInt("Config", "Borders", USE_BORDERS, ini_file);
-	fuelWidget.backgroundColor = tyresWidget.backgroundColor = engineWidget.backgroundColor = rainWidget.backgroundColor = inputsWidget.backgroundColor = fpsWidget.backgroundColor = GetPrivateProfileInt("Config", "BackgroundColor", BACKGROUND_COLOR, ini_file);
-	fuelWidget.borderColor = tyresWidget.borderColor = engineWidget.borderColor = rainWidget.borderColor = inputsWidget.borderColor = fpsWidget.borderColor = GetPrivateProfileInt("Config", "BorderColor", BORDER_COLOR, ini_file);
+	fuelWidget.useBorder = tyresWidget.useBorder = engineWidget.useBorder = rainWidget.useBorder = inputsWidget.useBorder = fpsWidget.useBorder = gearWidget.useBorder =
+		GetPrivateProfileInt("Config", "Borders", USE_BORDERS, ini_file);
+	fuelWidget.backgroundColor = tyresWidget.backgroundColor = engineWidget.backgroundColor = rainWidget.backgroundColor = inputsWidget.backgroundColor = fpsWidget.backgroundColor = gearWidget.backgroundColor =
+		GetPrivateProfileInt("Config", "BackgroundColor", BACKGROUND_COLOR, ini_file);
+	fuelWidget.borderColor = tyresWidget.borderColor = engineWidget.borderColor = rainWidget.borderColor = inputsWidget.borderColor = fpsWidget.borderColor = gearWidget.borderColor =
+		GetPrivateProfileInt("Config", "BorderColor", BORDER_COLOR, ini_file);
 
 	// [Input]
 	editKey = GetPrivateProfileInt("Input", "EditKey", DEFAULT_EDIT_KEY, ini_file);
@@ -543,33 +590,38 @@ void VHUD::LoadConfig(const char * ini_file)
 
 	// [Tyres]
 	tyresWidget.enabled = GetPrivateProfileInt("Tyres", "Enabled", true, ini_file);
-	tyresWidget.position.x = (int)GetPrivateProfileInt("Tyres", "PosX", tyresWidget.position.x, ini_file) + screenCenter;
+	tyresWidget.position.x = (int)GetPrivateProfileInt("Tyres", "PosX", 0, ini_file) + screenCenter;
 	tyresWidget.position.y = GetPrivateProfileInt("Tyres", "PosY", tyresWidget.position.y, ini_file);
 
 	// [Engine]
 	engineWidget.enabled = GetPrivateProfileInt("engine", "Enabled", true, ini_file);
-	engineWidget.position.x = (int)GetPrivateProfileInt("engine", "PosX", engineWidget.position.x, ini_file) + screenCenter;
+	engineWidget.position.x = (int)GetPrivateProfileInt("engine", "PosX", 0, ini_file) + screenCenter;
 	engineWidget.position.y = GetPrivateProfileInt("engine", "PosY", engineWidget.position.y, ini_file);
 
 	// [Rain]
 	rainWidget.enabled = GetPrivateProfileInt("Rain", "Enabled", true, ini_file);
-	rainWidget.position.x = (int)GetPrivateProfileInt("Rain", "PosX", rainWidget.position.x, ini_file) + screenCenter;
+	rainWidget.position.x = (int)GetPrivateProfileInt("Rain", "PosX", 0, ini_file) + screenCenter;
 	rainWidget.position.y = GetPrivateProfileInt("Rain", "PosY", rainWidget.position.y, ini_file);
 
 	// [Inputs]
 	inputsWidget.enabled = GetPrivateProfileInt("Inputs", "Enabled", true, ini_file);
-	inputsWidget.position.x = (int)GetPrivateProfileInt("Inputs", "PosX", inputsWidget.position.x, ini_file) + screenCenter;
+	inputsWidget.position.x = (int)GetPrivateProfileInt("Inputs", "PosX", 0, ini_file) + screenCenter;
 	inputsWidget.position.y = GetPrivateProfileInt("Inputs", "PosY", inputsWidget.position.y, ini_file);
 
 	// [FPSMeter]
 	fpsWidget.enabled = GetPrivateProfileInt("FPS", "Enabled", true, ini_file);
-	fpsWidget.position.x = (int)GetPrivateProfileInt("FPS", "PosX", fpsWidget.position.x, ini_file) + screenCenter;
+	fpsWidget.position.x = (int)GetPrivateProfileInt("FPS", "PosX", 0, ini_file) + screenCenter;
 	fpsWidget.position.y = GetPrivateProfileInt("FPS", "PosY", fpsWidget.position.y, ini_file);
 
 	// [StartingLights]
 	lightsWidget.enabled = GetPrivateProfileInt("StartingLights", "Enabled", true, ini_file);
-	lightsWidget.position.x = (int)GetPrivateProfileInt("StartingLights", "PosX", lightsWidget.position.x, ini_file) + screenCenter;
+	lightsWidget.position.x = (int)GetPrivateProfileInt("StartingLights", "PosX", 0, ini_file) + screenCenter;
 	lightsWidget.position.y = GetPrivateProfileInt("StartingLights", "PosY", lightsWidget.position.y, ini_file);
+
+	// [Gear]
+	gearWidget.enabled = GetPrivateProfileInt("Gear", "Enabled", true, ini_file);
+	gearWidget.position.x = (int)GetPrivateProfileInt("Gear", "PosX", 0, ini_file) + screenCenter;
+	gearWidget.position.y = GetPrivateProfileInt("Gear", "PosY", gearWidget.position.y, ini_file);
 }
 
 void VHUD::SaveConfig(const char *ini_file)
@@ -627,4 +679,11 @@ void VHUD::SaveConfig(const char *ini_file)
 	WritePrivateProfileString("StartingLights", "PosX", buffer, ini_file);
 	sprintf(buffer, " %.0f", lightsWidget.position.y);
 	WritePrivateProfileString("StartingLights", "PosY", buffer, ini_file);
+
+	// [Gear]
+	WritePrivateProfileString("Gear", "Enabled", gearWidget.enabled ? "1" : "0", ini_file);
+	sprintf(buffer, " %.0f", gearWidget.position.x - screenCenter);
+	WritePrivateProfileString("Gear", "PosX", buffer, ini_file);
+	sprintf(buffer, " %.0f", gearWidget.position.y);
+	WritePrivateProfileString("Gear", "PosY", buffer, ini_file);
 }

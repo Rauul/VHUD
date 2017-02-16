@@ -33,6 +33,8 @@ public:
 	LPDIRECT3DTEXTURE9 fpsIconTexture = NULL;
 	LPD3DXSPRITE lightIconSprite = NULL;
 	LPDIRECT3DTEXTURE9 lightIconTexture = NULL;
+	LPD3DXSPRITE gearIconSprite = NULL;
+	LPDIRECT3DTEXTURE9 gearIconTexture = NULL;
 	LPD3DXSPRITE boxSprite = NULL;
 	LPDIRECT3DTEXTURE9 boxTexture = NULL;
 	int mouseInSlot = -1;
