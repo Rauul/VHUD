@@ -123,7 +123,7 @@ struct TelemWheelV01
   double mRideHeight;            // meters
   double mSuspForce;             // pushrod load in Newtons
   double mBrakeTemp;             // Celsius
-  double mBrakePressure;         // currently 0.0-1.0, depending on driver input and brake balance; will convert to true brake pressure (kPa) in future
+  double mBrakePressure;         // currently 0.0-1.0, depending on driver input and unfilteredBrake balance; will convert to true unfilteredBrake pressure (kPa) in future
 
   double mRotation;              // radians/sec
   double mLateralPatchVel;       // lateral velocity at contact patch
@@ -197,7 +197,7 @@ struct TelemInfoV01
   double mEngineRPM;             // engine RPM
   double mEngineWaterTemp;       // Celsius
   double mEngineOilTemp;         // Celsius
-  double mClutchRPM;             // clutch RPM
+  double mClutchRPM;             // unfilteredClutch RPM
 
   // Driver input
   double mUnfilteredThrottle;    // ranges  0.0-1.0
@@ -205,7 +205,7 @@ struct TelemInfoV01
   double mUnfilteredSteering;    // ranges -1.0-1.0 (left to right)
   double mUnfilteredClutch;      // ranges  0.0-1.0
 
-  // Filtered input (various adjustments for rev or speed limiting, TC, ABS?, speed sensitive steering, clutch work for semi-automatic shifting, etc.)
+  // Filtered input (various adjustments for rev or speed limiting, TC, ABS?, speed sensitive steering, unfilteredClutch work for semi-automatic shifting, etc.)
   double mFilteredThrottle;      // ranges  0.0-1.0
   double mFilteredBrake;         // ranges  0.0-1.0
   double mFilteredSteering;      // ranges -1.0-1.0 (left to right)

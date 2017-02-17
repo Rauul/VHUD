@@ -40,9 +40,13 @@ public:
 	LPDIRECT3DTEXTURE9 barTexture = NULL;
 	LPD3DXSPRITE boxSprite = NULL;
 	LPDIRECT3DTEXTURE9 boxTexture = NULL;
-	double clutch = 0;
-	double brake = 0;
-	double throttle = 0;
+	double unfilteredClutch = 0;
+	double unfilteredBrake = 0;
+	double unfilteredThrottle = 0;
+	double filteredClutch = 0;
+	double filteredBrake = 0;
+	double filteredThrottle = 0;
+	bool showFilteredInputs = false;
 	bool useBorder = true;
 	bool enabled = true;	
 };

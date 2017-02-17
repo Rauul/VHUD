@@ -78,13 +78,13 @@ void Inputs::PostReset(const ScreenInfoV01 & info)
 
 void Inputs::Update(const TelemInfoV01 & info)
 {
-	/*clutch = info.mFilteredClutch;
-	brake = info.mFilteredBrake;
-	throttle = info.mFilteredThrottle;*/
+	filteredClutch = info.mFilteredClutch;
+	filteredBrake = info.mFilteredBrake;
+	filteredThrottle = info.mFilteredThrottle;
 
-	clutch = info.mUnfilteredClutch;
-	brake = info.mUnfilteredBrake;
-	throttle = info.mUnfilteredThrottle;
+	unfilteredClutch = info.mUnfilteredClutch;
+	unfilteredBrake = info.mUnfilteredBrake;
+	unfilteredThrottle = info.mUnfilteredThrottle;
 }
 
 void Inputs::UpdatePosition()
@@ -162,37 +162,80 @@ void Inputs::DrawBackground()
 
 void Inputs::DrawBars()
 {
-	RECT clutchSize = { 0, 0, 12, 0 };
-	D3DXVECTOR3 clutchPosition = position;
-	RECT brakeSize = { 0, 0, 12, 0 };
-	D3DXVECTOR3 brakePosition = position;
-	RECT throttleSize = { 0, 0, 12, 0 };
-	D3DXVECTOR3 throttlePosition = position;
+	RECT unfilteredClutchSize = { 0, 0, 12, 0 }, filteredClutchSize = { 0, 0, 12, 0 };
+	D3DXVECTOR3 unfilteredClutchPosition = position, filteredClutchPosition = position;
+	RECT unfilteredBrakeSize = { 0, 0, 12, 0 }, filteredBrakeSize = { 0, 0, 12, 0 };
+	D3DXVECTOR3 unfilteredBrakePosition = position, filteredBrakePosition = position;
+	RECT unfilteredThrottleSize = { 0, 0, 12, 0 }, filteredThrottleSize = { 0, 0, 12, 0 };
+	D3DXVECTOR3 unfilteredThrottlePosition = position, filteredThrottlePosition = position;
+	D3DCOLOR color;
 
-	clutchPosition.x += 6;
-	clutchPosition.y += 58 - 52 * clutch;
-	brakePosition.x += 26;
-	brakePosition.y += 58 - 52 * brake;
-	throttlePosition.x += 46;
-	throttlePosition.y += 58 - 52 * throttle;
-	clutchSize.top -= 52 * clutch;
-	brakeSize.top -= 52 * brake;
-	throttleSize.top -= 52 * throttle;
+	unfilteredClutchPosition.x += 6;
+	unfilteredClutchPosition.y += 58 - 52 * unfilteredClutch;
+	unfilteredBrakePosition.x += 26;
+	unfilteredBrakePosition.y += 58 - 52 * unfilteredBrake;
+	unfilteredThrottlePosition.x += 46;
+	unfilteredThrottlePosition.y += 58 - 52 * unfilteredThrottle;
+	unfilteredClutchSize.top -= 52 * unfilteredClutch;
+	unfilteredBrakeSize.top -= 52 * unfilteredBrake;
+	unfilteredThrottleSize.top -= 52 * unfilteredThrottle;
 
-	D3DCOLOR color = 0xFF284ad5;
-	iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
-	iconSprite->Draw(barTexture, &clutchSize, NULL, &clutchPosition, color);
-	iconSprite->End();
+	filteredClutchPosition.x += 6;
+	filteredClutchPosition.y += 58 - 52 * filteredClutch;
+	filteredBrakePosition.x += 26;
+	filteredBrakePosition.y += 58 - 52 * filteredBrake;
+	filteredThrottlePosition.x += 46;
+	filteredThrottlePosition.y += 58 - 52 * filteredThrottle;
+	filteredClutchSize.top -= 52 * filteredClutch;
+	filteredBrakeSize.top -= 52 * filteredBrake;
+	filteredThrottleSize.top -= 52 * filteredThrottle;
 
-	color = 0xFFc81515;
-	iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
-	iconSprite->Draw(barTexture, &brakeSize, NULL, &brakePosition, color);
-	iconSprite->End();
+	if (showFilteredInputs)
+	{ 
+		color = 0xAA366bd5;
+		iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
+		iconSprite->Draw(barTexture, &filteredClutchSize, NULL, &filteredClutchPosition, color);
+		iconSprite->End();
+		color = 0xFF366bd5; //284ad5;
+		iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
+		iconSprite->Draw(barTexture, &unfilteredClutchSize, NULL, &unfilteredClutchPosition, color);
+		iconSprite->End();
 
-	color = 0xFF2fca05;
-	iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
-	iconSprite->Draw(barTexture, &throttleSize, NULL, &throttlePosition, color);
-	iconSprite->End();
+		color = 0xFFc81515;
+		iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
+		iconSprite->Draw(barTexture, &filteredBrakeSize, NULL, &filteredBrakePosition, color);
+		iconSprite->End();
+		color = 0x80c81515;
+		iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
+		iconSprite->Draw(barTexture, &unfilteredBrakeSize, NULL, &unfilteredBrakePosition, color);
+		iconSprite->End();
+
+		color = 0xFF2fca05;
+		iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
+		iconSprite->Draw(barTexture, &filteredThrottleSize, NULL, &filteredThrottlePosition, color);
+		iconSprite->End();
+		color = 0x802fca05;
+		iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
+		iconSprite->Draw(barTexture, &unfilteredThrottleSize, NULL, &unfilteredThrottlePosition, color);
+		iconSprite->End();
+	}
+	else
+	{
+		color = 0xFF284ad5;
+		iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
+		iconSprite->Draw(barTexture, &unfilteredClutchSize, NULL, &unfilteredClutchPosition, color);
+		iconSprite->End();
+
+		color = 0xFFc81515;
+		iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
+		iconSprite->Draw(barTexture, &unfilteredBrakeSize, NULL, &unfilteredBrakePosition, color);
+		iconSprite->End();
+
+		color = 0xFF2fca05;
+		iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
+		iconSprite->Draw(barTexture, &unfilteredThrottleSize, NULL, &unfilteredThrottlePosition, color);
+		iconSprite->End();
+	}
 }
 
 void Inputs::DrawForeground()

@@ -79,6 +79,7 @@ void VHUD::EndSession()
 
 void VHUD::Load()
 {
+	timeLoaded = GetTickCount();
 	fuelWidget.ResetFuelUsage();	
 }
 
@@ -141,6 +142,17 @@ void VHUD::UpdateScoring(const ScoringInfoV01& info)
 void VHUD::InitScreen(const ScreenInfoV01& info)
 {
 	screenCenter = info.mWidth / 2;
+	screenHeight = info.mHeight;
+
+	scaleFactor = (float)info.mHeight / 1080.0f;
+	D3DXMatrixScaling(&scaleMatrix, scaleFactor, scaleFactor, 1.0f);
+	//D3DXMatrixTranslation(&scaleMatrix, (1.0f / scaleFactor) * 0.5f, 1.0f / scaleFactor * 0.5f, 0.0f);
+
+	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &splashSprite);
+	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, SPLASH_TEXTURE, &splashTexture);
+
+	/*D3DXCreateTextureFromFileEx((LPDIRECT3DDEVICE9)info.mDevice, SPLASH_TEXTURE, 512, 256, D3DX_DEFAULT, 
+		0, D3DFMT_FROM_FILE, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, NULL, NULL, &splashTexture);*/
 
 	menu.Init(info);
 	cursor.Init(info);
@@ -158,6 +170,15 @@ void VHUD::InitScreen(const ScreenInfoV01& info)
 
 void VHUD::UninitScreen(const ScreenInfoV01& info)
 {
+	if (splashTexture) {
+		splashTexture->Release();
+		splashTexture = NULL;
+	}
+	if (splashSprite) {
+		splashSprite->Release();
+		splashSprite = NULL;
+	}
+
 	menu.Uninit(info);
 	cursor.Uninit(info);
 	fuelWidget.Uninit(info);
@@ -172,6 +193,8 @@ void VHUD::UninitScreen(const ScreenInfoV01& info)
 
 void VHUD::RenderScreenBeforeOverlays(const ScreenInfoV01& info)
 {
+		//DrawSplashScreen();
+
 	if (!inRealtime || !isPlayer)
 		return;
 
@@ -186,6 +209,9 @@ void VHUD::RenderScreenBeforeOverlays(const ScreenInfoV01& info)
 
 void VHUD::PreReset(const ScreenInfoV01& info)
 {
+	if (splashSprite)
+		splashSprite->OnLostDevice();
+
 	menu.PreReset(info);
 	cursor.PreReset(info);
 	fuelWidget.PreReset(info);
@@ -200,6 +226,9 @@ void VHUD::PreReset(const ScreenInfoV01& info)
 
 void VHUD::PostReset(const ScreenInfoV01& info)
 {
+	if (splashSprite)
+		splashSprite->OnResetDevice();
+
 	menu.PostReset(info);
 	cursor.PostReset(info);
 	fuelWidget.PostReset(info);
@@ -569,6 +598,23 @@ void VHUD::ResetPositions(const ScreenInfoV01& info)
 	gearWidget.position = { screenCenter, y, 0 };
 }
 
+void VHUD::DrawSplashScreen()
+{
+	if (true)	//(timeLoaded + 30000 > GetTickCount())
+	{
+		RECT size = { 0, 0, 512, 256 };
+		D3DXVECTOR3 position = { 0, 0, 0 };
+		position.x = screenCenter - 256;
+		position.y = screenHeight / 2 - 128;
+
+		splashSprite->SetTransform(&scaleMatrix);
+
+		splashSprite->Begin(D3DXSPRITE_ALPHABLEND);
+		splashSprite->Draw(splashTexture, &size, NULL, &position, 0xFFFFFFFF);
+		splashSprite->End();
+	}
+}
+
 void VHUD::LoadConfig(const char * ini_file)
 {
 	// [Config]
@@ -579,9 +625,9 @@ void VHUD::LoadConfig(const char * ini_file)
 	fuelWidget.borderColor = tyresWidget.borderColor = engineWidget.borderColor = rainWidget.borderColor = inputsWidget.borderColor = fpsWidget.borderColor = gearWidget.borderColor =
 		GetPrivateProfileInt("Config", "BorderColor", BORDER_COLOR, ini_file);
 
-	// [Input]
-	editKey = GetPrivateProfileInt("Input", "EditKey", DEFAULT_EDIT_KEY, ini_file);
-	resetKey = GetPrivateProfileInt("Input", "ResetKey", DEFAULT_RESET_KEY, ini_file);
+	// [Controls]
+	editKey = GetPrivateProfileInt("Controls", "EditKey", DEFAULT_EDIT_KEY, ini_file);
+	resetKey = GetPrivateProfileInt("Controls", "ResetKey", DEFAULT_RESET_KEY, ini_file);
 
 	// [Fuel]
 	fuelWidget.enabled = GetPrivateProfileInt("Fuel", "Enabled", true, ini_file);
@@ -605,6 +651,7 @@ void VHUD::LoadConfig(const char * ini_file)
 
 	// [Inputs]
 	inputsWidget.enabled = GetPrivateProfileInt("Inputs", "Enabled", true, ini_file);
+	inputsWidget.showFilteredInputs = GetPrivateProfileInt("Inputs", "FilteredInputs", false, ini_file);
 	inputsWidget.position.x = (int)GetPrivateProfileInt("Inputs", "PosX", 0, ini_file) + screenCenter;
 	inputsWidget.position.y = GetPrivateProfileInt("Inputs", "PosY", inputsWidget.position.y, ini_file);
 

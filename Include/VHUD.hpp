@@ -16,16 +16,19 @@
 #include "Gear.hpp"
 #include <d3dx9.h>
 #include <sstream>
+#include <Windows.h>
 
 #define PLUGIN_NAME					"V-HUD"
-#define PLUGIN_VERSION				"0.71"
+#define PLUGIN_VERSION				"0.75"
 
 #if _WIN64
 #define CONFIG_FILE					"Bin64\\Plugins\\VHUD\\VHUD.ini"
 #define BACKGROUND_TEXTURE			"Bin64\\Plugins\\VHUD\\Images\\Background.png"
+#define SPLASH_TEXTURE				"Bin64\\Plugins\\VHUD\\Images\\Splash.png"
 #else
 #define CONFIG_FILE					"Bin32\\Plugins\\VHUD\\VHUD.ini"
 #define BACKGROUND_TEXTURE			"Bin32\\Plugins\\VHUD\\Images\\Background.png"
+#define SPLASH_TEXTURE				"Bin32\\Plugins\\VHUD\\Images\\Splash.png"
 #endif
 
 #define USE_BORDERS					true
@@ -106,6 +109,7 @@ public:
 	void UpdatePositions();
 	void MenuEvents();
 	void ResetPositions(const ScreenInfoV01& info);
+	void DrawSplashScreen();
 	void LoadConfig(const char *ini_file);
 	void SaveConfig(const char *ini_file);
 
@@ -114,12 +118,18 @@ public:
 	int resetKey = DEFAULT_RESET_KEY;
 	long playerSlot = 0;
 	float screenCenter = 0;
+	float screenHeight = 0;
 	bool inRealtime = false;
 	bool inEditMode = false;
 	bool editkeyDownLastFrame = false;
 	bool resetkeyDownLastFrame = false;
 	bool mouseDownLastFrame = false;
 	bool isPlayer = false;
+	float scaleFactor = 0;
+	D3DXMATRIX scaleMatrix;
+	DWORD timeLoaded = GetTickCount();
+	LPD3DXSPRITE splashSprite = NULL;
+	LPDIRECT3DTEXTURE9 splashTexture = NULL;
 
 private:
 	void DrawGraphics(const ScreenInfoV01& info);
