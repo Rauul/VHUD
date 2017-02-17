@@ -43,6 +43,12 @@
     <ClInclude Include="Include\Gear.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Grid.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Driver.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sourse Files">
@@ -86,6 +92,12 @@
       <Filter>Sourse Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Gear.cpp">
+      <Filter>Sourse Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Grid.cpp">
+      <Filter>Sourse Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Driver.cpp">
       <Filter>Sourse Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -14,6 +14,7 @@
 #include "FPSMeter.hpp"
 #include "StartingLights.hpp"
 #include "Gear.hpp"
+#include "Grid.hpp"
 #include <d3dx9.h>
 #include <sstream>
 #include <Windows.h>
@@ -56,7 +57,7 @@ public:
 	void EnterRealtime();          // entering realtime
 	void ExitRealtime();           // exiting realtime
 
-	void StartSession();           // session has started
+	void StartSession(const ScoringInfoV01& info);           // session has started
 	void EndSession();             // session has ended
 
 	void Load();
@@ -105,6 +106,7 @@ public:
 	bool MouseIsOver(FPSMeter); 
 	bool MouseIsOver(StartingLights);
 	bool MouseIsOver(Gear);
+	bool MouseIsOver(Grid);
 	bool IsPlayer(const ScoringInfoV01& info);
 	void UpdatePositions();
 	void MenuEvents();

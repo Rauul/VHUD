@@ -191,37 +191,38 @@ void Inputs::DrawBars()
 	filteredThrottleSize.top -= 52 * filteredThrottle;
 
 	if (showFilteredInputs)
-	{ 
+	{
 		color = 0xAA366bd5;
 		iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
 		iconSprite->Draw(barTexture, &filteredClutchSize, NULL, &filteredClutchPosition, color);
 		iconSprite->End();
 		color = 0xFF366bd5; //284ad5;
-		iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
+		iconSprite->Begin(D3DXSPRITE_SORT_TEXTURE);
 		iconSprite->Draw(barTexture, &unfilteredClutchSize, NULL, &unfilteredClutchPosition, color);
 		iconSprite->End();
 
-		color = 0xFFc81515;
-		iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
-		iconSprite->Draw(barTexture, &filteredBrakeSize, NULL, &filteredBrakePosition, color);
-		iconSprite->End();
 		color = 0x80c81515;
 		iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
 		iconSprite->Draw(barTexture, &unfilteredBrakeSize, NULL, &unfilteredBrakePosition, color);
 		iconSprite->End();
-
-		color = 0xFF2fca05;
-		iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
-		iconSprite->Draw(barTexture, &filteredThrottleSize, NULL, &filteredThrottlePosition, color);
+		color = 0xFFc81515;
+		iconSprite->Begin(D3DXSPRITE_SORT_TEXTURE);
+		iconSprite->Draw(barTexture, &filteredBrakeSize, NULL, &filteredBrakePosition, color);
 		iconSprite->End();
+
 		color = 0x802fca05;
 		iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
 		iconSprite->Draw(barTexture, &unfilteredThrottleSize, NULL, &unfilteredThrottlePosition, color);
 		iconSprite->End();
+		color = 0xFF2fca05;
+		iconSprite->Begin(D3DXSPRITE_SORT_TEXTURE);
+		iconSprite->Draw(barTexture, &filteredThrottleSize, NULL, &filteredThrottlePosition, color);
+		iconSprite->End();
 	}
+
 	else
 	{
-		color = 0xFF284ad5;
+		color = 0xFF366bd5;
 		iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
 		iconSprite->Draw(barTexture, &unfilteredClutchSize, NULL, &unfilteredClutchPosition, color);
 		iconSprite->End();
@@ -240,13 +241,17 @@ void Inputs::DrawBars()
 
 void Inputs::DrawForeground()
 {
-	RECT size = { 0, 0, 62, 4 };
+	RECT size = { 0, 0, 12, 4 };
 	D3DXVECTOR3 pos = position;
 
-	pos.x += 1;
+	pos.x += 6;
 	pos.y += 9;
 
 	iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
-	iconSprite->Draw(boxTexture, &size, NULL, &pos, backgroundColor);
+	for (int i = 0; i < 3; i++)
+	{
+		iconSprite->Draw(boxTexture, &size, NULL, &pos, backgroundColor);
+		pos.x += 20;
+	}
 	iconSprite->End();
 }
