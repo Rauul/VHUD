@@ -74,6 +74,32 @@ bool Fuel::NewLapStarted(const TelemInfoV01 & info)
 	return false;
 }
 
+bool Fuel::NewLapStarted(const ScoringInfoV01 & info)
+{
+	if (oldLap != info.mVehicle[playerSlot].mTotalLaps)
+	{
+		oldLap = info.mVehicle[playerSlot].mTotalLaps;
+		return true;
+	}
+
+	return false;
+}
+
+void Fuel::setPlayerSlot(const ScoringInfoV01 & info)
+{
+	if (playerSlot < 0 || !info.mVehicle[playerSlot].mIsPlayer)
+	{
+		for (long i = 0; i < info.mNumVehicles; i++)
+		{
+			if (info.mVehicle[i].mIsPlayer)
+			{
+				playerSlot = i;
+				break;
+			}
+		}
+	}
+}
+
 void Fuel::Update(const TelemInfoV01& info)
 {
 	quantity = info.mFuel;
@@ -86,7 +112,7 @@ void Fuel::Update(const TelemInfoV01& info)
 
 	if (NewLapStarted(info))
 	{
-		if (quantityLastLap - quantity > 0.1)
+		if (quantityLastLap - quantity > info.mFuelCapacity * 0.01)
 		{
 			for (int i = 2; i > 0; i--)
 			{
@@ -94,15 +120,67 @@ void Fuel::Update(const TelemInfoV01& info)
 			}
 			usedPerLap[0] = quantityLastLap - quantity;
 		}
+
 		quantityLastLap = quantity;
 		lastLapStartET = info.mLapStartET;
 	}
 
-	if (usedPerLap[0] > 0 && usedPerLap[1] > 0 && usedPerLap[2] > 0)
+	int laps = 0;
+	double total = 0;
+	for (int i = 0; i < 3; i++)
 	{
-		double avgFuelConsumption = (usedPerLap[0] + usedPerLap[1] + usedPerLap[2]) / 3;
+		if (usedPerLap[i] > 0)
+		{
+			total += usedPerLap[i];
+			laps++;
+		}
+		else
+			break;
+	}
+
+	if (laps > 0)
+	{
+		double avgFuelConsumption = total / laps;
 		lapQuantity = quantity / avgFuelConsumption;
 	}
+}
+
+void Fuel::Update(const ScoringInfoV01 & info)
+{
+	setPlayerSlot(info);
+	timeQuantityTotal = 0;
+
+	if (NewLapStarted(info))
+	{
+		if ((info.mVehicle[playerSlot].mBestLapTime < bestLapLastSession && info.mVehicle[playerSlot].mBestLapTime > 0) || bestLapLastSession < 1)
+			bestLapLastSession = info.mVehicle[playerSlot].mBestLapTime;
+	}
+
+	int laps = 0;
+	double total = 0;
+	for (int i = 0; i < 3; i++)
+	{
+		if (usedPerLap[i] > 0)
+		{
+			total += usedPerLap[i];
+			laps++;
+		}
+		else
+			break;
+	}
+
+	if (laps > 0 && (info.mVehicle[playerSlot].mBestLapTime > 0 || bestLapLastSession > 0))
+	{
+		double avgFuelConsumption = total / laps;
+
+		if(info.mVehicle[playerSlot].mBestLapTime > 0)
+			timeQuantityTotal = quantity / (avgFuelConsumption / info.mVehicle[playerSlot].mBestLapTime);
+		else
+			timeQuantityTotal = quantity / (avgFuelConsumption / bestLapLastSession);
+	}
+
+	timeQuantityMinutes = timeQuantityTotal / 60;
+	timeQuantitySeconds = timeQuantityTotal % 60;
 }
 
 void Fuel::UpdatePosition()
@@ -120,10 +198,8 @@ void Fuel::UpdatePosition()
 
 void Fuel::ResetFuelUsage()
 {
-	for each (double d in usedPerLap)
-	{
-		d = 0;
-	}
+	bestLapLastSession = lapQuantity = 0;
+	usedPerLap[0] = usedPerLap[1] = usedPerLap[2] = 0;
 }
 
 void Fuel::Draw(bool inEditMode)
@@ -191,7 +267,7 @@ void Fuel::DrawTxt()
 	RECT pos;
 	pos.left = position.x + 50;
 	pos.top = position.y + 2;
-	pos.right = pos.left + 121;
+	pos.right = pos.left + size.right - 50;
 	pos.bottom = pos.top + 36;
 	char text[32] = "";
 
@@ -201,6 +277,6 @@ void Fuel::DrawTxt()
 	pos.top += 40;
 	pos.bottom = pos.top + 24;
 
-	sprintf(text, "%.2f | %.1f", usedPerLap[0], lapQuantity);
+	sprintf(text, "%.2f | %.1f | %02d:%02d", usedPerLap[0], lapQuantity, timeQuantityMinutes, timeQuantitySeconds);
 	smallFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
 }

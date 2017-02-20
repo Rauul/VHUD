@@ -18,7 +18,10 @@ public:
 	void PreReset(const ScreenInfoV01& info);
 	void PostReset(const ScreenInfoV01& info);
 	bool NewLapStarted(const TelemInfoV01& info);
+	bool NewLapStarted(const ScoringInfoV01& info);
+	void setPlayerSlot(const ScoringInfoV01& info);
 	void Update(const TelemInfoV01& info);
+	void Update(const ScoringInfoV01 & info);
 	void UpdatePosition();
 	void ResetFuelUsage();
 	void Draw(bool inEditMode);
@@ -26,7 +29,7 @@ public:
 	void DrawIcon();
 	void DrawTxt();
 		
-	RECT size = { 0, 0, 170, 65 };
+	RECT size = { 0, 0, 220, 65 };
 	D3DXVECTOR3 position = { 0, 600, 0 };
 	D3DCOLOR backgroundColor = 0xFF000000;
 	D3DCOLOR borderColor = 0xFFAAAAAA;
@@ -38,15 +41,19 @@ public:
 	LPDIRECT3DTEXTURE9 iconTexture = NULL;
 	LPD3DXSPRITE boxSprite = NULL;
 	LPDIRECT3DTEXTURE9 boxTexture = NULL;
-	char font[32] = "Tahoma";
 	int smallFontSize = 17;
 	int bigFontSize = 40;
+	int playerSlot = 0;
+	int oldLap = 0;
 	double quantity = 0.00;
 	double quantityLastLap = 0.00;
 	double usedPerLap[3] = { 0, 0, 0 };
-	double lapTime[3];
+	double bestLapLastSession = 0;
 	double lastLapStartET = 0.00;
 	double lapQuantity = 0.00;
+	int timeQuantityTotal = 0;
+	int timeQuantityMinutes = 0;
+	int timeQuantitySeconds = 0;
 	bool firstUpdate = true;
 	bool useBorder = true;
 	bool enabled = true;

@@ -36,11 +36,17 @@ public:
 	LPDIRECT3DTEXTURE9 iconTexture = NULL;
 	LPD3DXSPRITE boxSprite = NULL;
 	LPDIRECT3DTEXTURE9 boxTexture = NULL;
+	DWORD startTime = GetTickCount();
+	DWORD interval = 3000;
 	double rainPtc = 0;
 	double onPathWetness = 0;
 	double offPathWetness = 0;
+	double trackTemp = 0;
+	double ambientTemp = 0;
+	int mode = 1;
 	bool useBorder = true;
 	bool enabled = true;
+	bool showWetness = true;
 
 private:
 

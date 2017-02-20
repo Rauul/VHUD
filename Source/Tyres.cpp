@@ -63,6 +63,17 @@ void Tyres::Update(const TelemInfoV01 & info)
 	wearFR = info.mWheel[1].mWear * 100;
 	wearRL = info.mWheel[2].mWear * 100;
 	wearRR = info.mWheel[3].mWear * 100;
+
+	tempFL = (info.mWheel[0].mTemperature[0] + info.mWheel[0].mTemperature[1] + info.mWheel[0].mTemperature[2]) / 3 - 273.15;
+	tempFR = (info.mWheel[1].mTemperature[0] + info.mWheel[1].mTemperature[1] + info.mWheel[1].mTemperature[2]) / 3 - 273.15;
+	tempRL = (info.mWheel[2].mTemperature[0] + info.mWheel[2].mTemperature[1] + info.mWheel[2].mTemperature[2]) / 3 - 273.15;
+	tempRR = (info.mWheel[3].mTemperature[0] + info.mWheel[3].mTemperature[1] + info.mWheel[3].mTemperature[2]) / 3 - 273.15;
+
+	if (mode == 3 && startTime + interval < GetTickCount())
+	{
+		showWear = !showWear;
+		startTime = GetTickCount();
+	}
 }
 
 void Tyres::UpdatePosition()
@@ -143,16 +154,69 @@ void Tyres::DrawTxt()
 	RECT pos;
 	pos.left = position.x + 50;
 	pos.top = position.y + 10;
-	pos.right = pos.left + 121;
+	pos.right = pos.left + 120;
 	pos.bottom = pos.top + 36;
 	char text[32] = "";
-	
-	sprintf(text, "%.0f%% | %.0f%%", wearFL, wearFR);
-	smallFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
 
-	pos.top += 25;
-	pos.bottom = pos.top + 24;
-
-	sprintf(text, "%.0f%% | %.0f%%", wearRL, wearRR);
-	smallFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
+	switch (mode)
+	{
+	case 1:
+		sprintf(text, "%.0f%% | %.0f%%", wearFL, wearFR);
+		smallFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
+		pos.top += 25;
+		pos.bottom = pos.top + 24;
+		sprintf(text, "%.0f%% | %.0f%%", wearRL, wearRR);
+		smallFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
+		break;
+	case 2:
+		sprintf(text, "%.0f C | %.0f C", tempFL, tempFR);
+		smallFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
+		pos.top += 25;
+		pos.bottom = pos.top + 24;
+		sprintf(text, "%.0f C | %.0f C", tempRL, tempRR);
+		smallFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
+		break;
+	case 3:
+		if (showWear)
+		{
+			sprintf(text, "%.0f%% | %.0f%%", wearFL, wearFR);
+			smallFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
+			pos.top += 25;
+			pos.bottom = pos.top + 24;
+			sprintf(text, "%.0f%% | %.0f%%", wearRL, wearRR);
+			smallFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
+		}
+		else
+		{
+			sprintf(text, "%.0f C | %.0f C", tempFL, tempFR);
+			smallFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
+			pos.top += 25;
+			pos.bottom = pos.top + 24;
+			sprintf(text, "%.0f C | %.0f C", tempRL, tempRR);
+			smallFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
+		}
+		break;
+	case 4:
+		if (tempFL < threshold && tempFR < threshold && tempRL < threshold && tempRR < threshold)
+		{
+			sprintf(text, "%.0f%% | %.0f%%", wearFL, wearFR);
+			smallFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
+			pos.top += 25;
+			pos.bottom = pos.top + 24;
+			sprintf(text, "%.0f%% | %.0f%%", wearRL, wearRR);
+			smallFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
+		}
+		else
+		{
+			sprintf(text, "%.0f C | %.0f C", tempFL, tempFR);
+			smallFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
+			pos.top += 25;
+			pos.bottom = pos.top + 24;
+			sprintf(text, "%.0f C | %.0f C", tempRL, tempRR);
+			smallFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
+		}
+		break;
+	default:
+		break;
+	}
 }

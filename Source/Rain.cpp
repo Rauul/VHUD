@@ -71,6 +71,14 @@ void Rain::Update(const ScoringInfoV01& info)
 	rainPtc = info.mRaining * 100;
 	onPathWetness = info.mMinPathWetness * 100;
 	offPathWetness = info.mMaxPathWetness * 100;
+	trackTemp = info.mTrackTemp;
+	ambientTemp = info.mAmbientTemp;
+
+	if (mode == 3 && startTime + interval < GetTickCount())
+	{
+		showWetness = !showWetness;
+		startTime = GetTickCount();
+	}
 }
 
 void Rain::UpdatePosition()
@@ -161,6 +169,9 @@ void Rain::DrawTxt()
 	pos.top += 40;
 	pos.bottom = pos.top + 24;
 
-	sprintf(text, "%.0f%% | %.0f%%", onPathWetness, offPathWetness);
+	if (mode == 1 || (showWetness && mode == 3))
+		sprintf(text, "%.0f%% | %.0f%%", onPathWetness, offPathWetness);
+	else
+		sprintf(text, "%.0f C | %.0f C", trackTemp, ambientTemp);
 	smallFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
 }

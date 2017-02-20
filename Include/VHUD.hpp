@@ -20,7 +20,7 @@
 #include <Windows.h>
 
 #define PLUGIN_NAME					"V-HUD"
-#define PLUGIN_VERSION				"0.75"
+#define PLUGIN_VERSION				"0.82"
 
 #if _WIN64
 #define CONFIG_FILE					"Bin64\\Plugins\\VHUD\\VHUD.ini"
@@ -127,6 +127,7 @@ public:
 	bool resetkeyDownLastFrame = false;
 	bool mouseDownLastFrame = false;
 	bool isPlayer = false;
+	bool displayedWelcomeMessage = false;
 	float scaleFactor = 0;
 	D3DXMATRIX scaleMatrix;
 	DWORD timeLoaded = GetTickCount();
@@ -135,6 +136,7 @@ public:
 
 private:
 	void DrawGraphics(const ScreenInfoV01& info);
+	bool WantsToDisplayMessage(MessageInfoV01 & msgInfo);
 	double mET;  // needed for the hardware example
 	bool mEnabled; // needed for the hardware example
 };

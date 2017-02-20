@@ -34,12 +34,21 @@ public:
 	LPDIRECT3DTEXTURE9 iconTexture = NULL;
 	LPD3DXSPRITE boxSprite = NULL;
 	LPDIRECT3DTEXTURE9 boxTexture = NULL;
+	DWORD startTime = GetTickCount();
+	DWORD interval = 3000;
 	double wearFL = 0.00;
 	double wearFR = 0.00;
 	double wearRL = 0.00;
 	double wearRR = 0.00;
+	double tempFL = 0.00;
+	double tempFR = 0.00;
+	double tempRL = 0.00;
+	double tempRR = 0.00;
+	double threshold = 125;
+	int mode = 1;
 	bool useBorder = true;
 	bool enabled = true;
+	bool showWear = true;
 
 private:
 };

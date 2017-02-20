@@ -16,7 +16,7 @@ void Grid::Init(const ScreenInfoV01 & info)
 	D3DXCreateFontIndirect((LPDIRECT3DDEVICE9)info.mDevice, &bigFontDesc, &bigFont);
 	D3DXCreateFontIndirect((LPDIRECT3DDEVICE9)info.mDevice, &smallFontDesc, &smallFont);
 
-	position.x = info.mWidth / 2 - size.right / 2;
+	size.bottom = nDriversToShow * 48 + 24 + 26;
 }
 
 void Grid::Uninit(const ScreenInfoV01 & info)
@@ -78,9 +78,6 @@ void Grid::Update(const ScoringInfoV01 & info)
 	{
 		VehicleScoringInfoV01 &vinfo = info.mVehicle[l];
 
-		//Driver(char pDriverName[32], char pVehicleClass[32], short pTotalLaps, double pLapDistance, double pFullLapDistance, double pTimeIntoLap,
-		//double pEstimatedLapTime, double timeBehindNext, bool pInPits, bool pIsPlayer, unsigned short pPlace)
-
 		Driver driver(vinfo.mDriverName, vinfo.mVehicleClass, vinfo.mTotalLaps, vinfo.mLapDist, info.mLapDist, vinfo.mTimeIntoLap, vinfo.mEstimatedLapTime, vinfo.mInPits, vinfo.mIsPlayer, vinfo.mPlace);
 
 		if (vinfo.mIsPlayer)
@@ -119,8 +116,6 @@ void Grid::Update(const ScoringInfoV01 & info)
 			{
 				drivers[i].relativeDistance = -abs(drivers[playerSlot].lapDistance - info.mLapDist - drivers[i].lapDistance);
 			}
-
-		double truetime = drivers[i].estimatedLapTime * (drivers[playerSlot].timeIntoLap / drivers[playerSlot].estimatedLapTime);
 
 
 		// Calculate the reative time to driver
@@ -261,7 +256,7 @@ void Grid::DrawTxt()
 	timePosition.bottom = timePosition.top + 20;
 
 	timerPosition.left = placePosition.left;
-	timerPosition.top = position.y + 168;
+	timerPosition.top = position.y + size.bottom - 26;
 	timerPosition.right = timePosition.right;
 	timerPosition.bottom = timerPosition.top + 26;
 
@@ -285,7 +280,7 @@ void Grid::DrawTxt()
 
 	int gridStartNum = TopGridPlace(playerSlot);
 
-	for (int i = 0; i < 7; i++)
+	for (int i = 0; i < nDriversToShow * 2 + 1; i++)
 	{
 		if (gridStartNum + i >= (int)drivers.size())
 			break;
@@ -366,7 +361,7 @@ void Grid::DrawTxt()
 		hours = minutes / 60;
 		minutes = minutes % 60;
 
-		sprintf(c_buffer, "Time:  %2d:%02d:%02d", hours, minutes, seconds);
+		sprintf(c_buffer, "%2d:%02d:%02d", hours, minutes, seconds);
 		smallFont->DrawText(NULL, c_buffer, -1, &timerPosition, DT_RIGHT | DT_VCENTER, 0xFFFFFFFF);
 	}
 	else
@@ -381,23 +376,34 @@ void Grid::DrawTxt()
 		hours = minutes / 60;
 		minutes = minutes % 60;
 
-		sprintf(c_buffer, "Time:  %2d:%02d:%02d", hours, minutes, seconds);
+		sprintf(c_buffer, "%2d:%02d:%02d", hours, minutes, seconds);
 		smallFont->DrawText(NULL, c_buffer, -1, &timerPosition, DT_RIGHT | DT_VCENTER, 0xFFFFFFFF);
 	}
+
+	time_t t = time(0);
+	struct tm *now = localtime(&t);
+
+	sprintf(c_buffer, "%02d:%02d", now->tm_hour, now->tm_min);
+	smallFont->DrawText(NULL, c_buffer, -1, &timerPosition, DT_CENTER | DT_VCENTER, 0xFFFFFFFF);
+}
+
+double Grid::GetRelativeTimeToPlayer(Driver other, int playerSlot)
+{
+	return 0.0;
 }
 
 int Grid::TopGridPlace(int playerSlot)
 {
-	if ((int)drivers.size() <= 7)
+	if ((int)drivers.size() <= nDriversToShow * 2 + 1)
 		return 0;
 
-	if (playerSlot < 4)
+	if (playerSlot < nDriversToShow + 1)
 		return 0;
 
-	if (playerSlot >= (int)drivers.size() - 3)
-		return (int)drivers.size() - 7;
+	if (playerSlot >= (int)drivers.size() - nDriversToShow)
+		return (int)drivers.size() - (nDriversToShow * 2 + 1);
 
-	return playerSlot - 3;
+	return playerSlot - nDriversToShow;
 }
 
 D3DCOLOR Grid::TextColor(int other, int player)

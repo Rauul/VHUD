@@ -101,11 +101,11 @@ void StartingLights::Update(const ScoringInfoV01 & info)
 	numLights = info.mStartLight;
 	numRedLights = info.mNumRedLights;
 	
-	if (playerSlot < 0 || info.mVehicle[playerSlot].mControl != 0)
+	if (playerSlot < 0 || !info.mVehicle[playerSlot].mIsPlayer)
 	{
 		for (long i = 0; i < info.mNumVehicles; i++)
 		{
-			if (info.mVehicle[i].mControl == 0)
+			if (info.mVehicle[i].mIsPlayer)
 			{
 				playerSlot = i;
 				break;

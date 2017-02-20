@@ -6,6 +6,7 @@
 #include <d3dx9.h>
 #include <vector>
 #include <algorithm>
+#include <ctime>
 
 #if _WIN64
 #define GRID_ICON				"Bin64\\Plugins\\VHUD\\Images\\Grid.png"
@@ -28,6 +29,7 @@ public:
 	void Draw(bool inEditMode);
 	void DrawBox(bool inEditMode);
 	void DrawTxt();
+	double GetRelativeTimeToPlayer(Driver other, int playerSlot);
 	int TopGridPlace(int playerSlot);
 	D3DCOLOR TextColor(int other, int player);
 
@@ -49,6 +51,7 @@ public:
 	bool enabled = true;
 	bool isMultiClass = false;
 	bool isTimedSession = false;
+	int nDriversToShow = 3;
 	double currentTime = 0;
 	double endTime = 0;
 	short laps = 0;
