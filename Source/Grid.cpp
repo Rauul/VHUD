@@ -141,6 +141,15 @@ void Grid::Update(const ScoringInfoV01 & info)
 	vehicleClasses.clear();
 	for (int i = 0; i < (int)drivers.size(); i++)
 	{
+		for (int j = 0; j < (int)userClassValues.size(); j++)
+		{
+			if (userClassValues[j].find(drivers[i].vehicleClass) != string::npos) 
+			{
+				sprintf(drivers[i].vehicleClass, "%s", userClassKeys[j]);
+				break;
+			}
+		}
+
 		if (find(vehicleClasses.begin(), vehicleClasses.end(), drivers[i].vehicleClass) == vehicleClasses.end())
 			vehicleClasses.push_back(drivers[i].vehicleClass);
 	}

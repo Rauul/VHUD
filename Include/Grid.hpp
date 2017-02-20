@@ -47,6 +47,8 @@ public:
 	vector<string> vehicleClasses;
 	vector<string> userClassColorKeys;
 	vector<D3DCOLOR> userClassColorValues;
+	vector<string> userClassKeys;
+	vector<string> userClassValues;
 	bool useBorder = true;
 	bool enabled = true;
 	bool isMultiClass = false;

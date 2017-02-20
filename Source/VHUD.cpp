@@ -769,6 +769,25 @@ void VHUD::LoadConfig(const char * ini_file)
 		gridWidget.userClassColorKeys.push_back(key);
 		gridWidget.userClassColorValues.push_back(value);
 	}
+
+	// [VehicleClasses] section
+	gridWidget.userClassKeys.clear();
+	gridWidget.userClassValues.clear();
+	char * pBigString2 = new char[1024];
+	DWORD dw2 = GetPrivateProfileSection("VehicleClasses", pBigString2, 1024, CONFIG_FILE);
+	for (LPCSTR pToken = pBigString2; pToken && *pToken; pToken = NextToken(pToken))
+	{
+		string str = pToken;
+		size_t breakpos = str.find("=");
+		string keySubString = str.substr(0, breakpos);
+		char key[1024];
+		strncpy(key, keySubString.c_str(), sizeof(key));
+		char value[1024];
+		GetPrivateProfileString("VehicleClasses", key, "ERROR", value, 1024, CONFIG_FILE);
+
+		gridWidget.userClassKeys.push_back(key);
+		gridWidget.userClassValues.push_back(value);
+	}
 }
 
 void VHUD::SaveConfig(const char *ini_file)

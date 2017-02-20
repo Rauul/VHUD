@@ -143,6 +143,9 @@ void Tyres::DrawIcon()
 	RECT size = { 0, 0, 64, 64 };
 	D3DCOLOR color = 0xFFFFFFFF;
 
+	if (!(tempFL < threshold && tempFR < threshold && tempRL < threshold && tempRR < threshold) && mode > 1)
+		color = 0xFFFF0000;
+
 	iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
 	iconSprite->Draw(iconTexture, &size, NULL, &position, color);
 	iconSprite->End();

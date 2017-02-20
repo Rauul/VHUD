@@ -256,6 +256,12 @@ void Fuel::DrawIcon()
 	RECT size = { 0, 0, 64, 64 };
 	D3DCOLOR color = 0xFFFFFFFF;
 
+	if (usedPerLap[0] > 0 && lapQuantity < 3)
+		color = 0xFFFF8000;
+
+	if (usedPerLap[0] > 0 && lapQuantity < 1)
+		color = 0xFFFF0000;
+
 	iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
 	iconSprite->Draw(iconTexture, &size, NULL, &position, color);
 	iconSprite->End();

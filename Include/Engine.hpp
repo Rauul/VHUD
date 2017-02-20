@@ -36,6 +36,7 @@ public:
 	LPDIRECT3DTEXTURE9 boxTexture = NULL;
 	double oilTemp = 0.00;
 	double waterTemp = 0.00;
+	bool overheating = false;
 	bool useBorder = true;
 	bool enabled = true;
 
