@@ -9,7 +9,7 @@ Driver::Driver()
 }
 
 Driver::Driver(char pDriverName[32], char pVehicleClass[32], short pTotalLaps, double pLapDistance, double pFullLapDistance, double pTimeIntoLap,
-	double pEstimatedLapTime, bool pInPits, bool pIsPlayer, unsigned short pPlace)
+	double pEstimatedLapTime, bool pInPits, bool pIsPlayer, unsigned short pPlace, bool pInGarageStall)
 {
 	for (int i = 0; i < 32; i++)
 	{
@@ -24,4 +24,5 @@ Driver::Driver(char pDriverName[32], char pVehicleClass[32], short pTotalLaps, d
 	inPits = pInPits;
 	isPlayer = pIsPlayer;
 	place = pPlace;
+	inGarageStall = pInGarageStall;
 }

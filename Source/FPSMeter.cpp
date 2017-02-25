@@ -4,12 +4,13 @@
 
 void FPSMeter::Init(const ScreenInfoV01 & info)
 {
+	GetPrivateProfileString("Config", "Font", "Tahoma", bigFontDesc.FaceName, 32, CONFIG_FILE);
+	bigFontDesc.Height = GetPrivateProfileInt("Config", "BigFontSize", 40, CONFIG_FILE);
+
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &boxSprite);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, BACKGROUND_TEXTURE, &boxTexture);
 	D3DXCreateFontIndirect((LPDIRECT3DDEVICE9)info.mDevice, &bigFontDesc, &bigFont);
 	D3DXCreateFontIndirect((LPDIRECT3DDEVICE9)info.mDevice, &smallFontDesc, &smallFont);
-
-	position.x = info.mWidth / 2 - size.right / 2;
 }
 
 void FPSMeter::Uninit(const ScreenInfoV01 & info)

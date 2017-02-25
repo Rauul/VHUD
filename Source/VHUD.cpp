@@ -154,8 +154,8 @@ void VHUD::InitScreen(const ScreenInfoV01& info)
 	screenHeight = info.mHeight;
 
 	scaleFactor = (float)info.mHeight / 1080.0f;
-	D3DXMatrixScaling(&scaleMatrix, scaleFactor, scaleFactor, 1.0f);
-	//D3DXMatrixTranslation(&scaleMatrix, (1.0f / scaleFactor) * 0.5f, 1.0f / scaleFactor * 0.5f, 0.0f);
+	
+	//D3DXMatrixTranslation(&mat, (1.0f / scaleFactor) * 0.5f, 1.0f / scaleFactor * 0.5f, 0.0f);
 
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &splashSprite);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, SPLASH_TEXTURE, &splashTexture);
@@ -163,6 +163,7 @@ void VHUD::InitScreen(const ScreenInfoV01& info)
 	/*D3DXCreateTextureFromFileEx((LPDIRECT3DDEVICE9)info.mDevice, SPLASH_TEXTURE, 512, 256, D3DX_DEFAULT, 
 		0, D3DFMT_FROM_FILE, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, NULL, NULL, &splashTexture);*/
 
+	LoadConfig(CONFIG_FILE);
 
 	menu.Init(info);
 	cursor.Init(info);
@@ -174,8 +175,6 @@ void VHUD::InitScreen(const ScreenInfoV01& info)
 	fpsWidget.Init(info);
 	lightsWidget.Init(info);
 	gearWidget.Init(info);
-
-	LoadConfig(CONFIG_FILE);
 	gridWidget.Init(info);
 }
 
@@ -665,13 +664,17 @@ void VHUD::DrawSplashScreen()
 	{
 		RECT size = { 0, 0, 512, 256 };
 		D3DXVECTOR3 position = { 0, 0, 0 };
-		position.x = screenCenter - 256;
-		position.y = screenHeight / 2 - 128;
+		position.x = screenCenter - 256 * scaleFactor;
+		position.y = screenHeight / 2 - 128 * scaleFactor;
 
-		splashSprite->SetTransform(&scaleMatrix);
+		D3DXVECTOR3 spriteCenter = { screenCenter - 256 * scaleFactor, screenHeight / 2 - 128 * scaleFactor,0 };
+		D3DXMATRIX mat;
+		D3DXVECTOR3 scaling(scaleFactor, scaleFactor, 0);
+		D3DXMatrixTransformation(&mat, &spriteCenter, NULL, &scaling, NULL, NULL, NULL);
+		splashSprite->SetTransform(&mat);
 
 		splashSprite->Begin(D3DXSPRITE_ALPHABLEND);
-		splashSprite->Draw(splashTexture, &size, NULL, &position, 0xFFFFFFFF);
+		splashSprite->Draw(splashTexture, &size, NULL, &position, 0x88FFFFFF);
 		splashSprite->End();
 	}
 }
@@ -688,14 +691,17 @@ void VHUD::LoadConfig(const char * ini_file)
 		gridWidget.borderColor =
 		GetPrivateProfileInt("Config", "BorderColor", BORDER_COLOR, ini_file);
 
+
 	// [Controls]
 	editKey = GetPrivateProfileInt("Controls", "EditKey", DEFAULT_EDIT_KEY, ini_file);
 	resetKey = GetPrivateProfileInt("Controls", "ResetKey", DEFAULT_RESET_KEY, ini_file);
+
 
 	// [Fuel]
 	fuelWidget.enabled = GetPrivateProfileInt("Fuel", "Enabled", true, ini_file);
 	fuelWidget.position.x = (int)GetPrivateProfileInt("Fuel", "PosX", 0, ini_file) + screenCenter;
 	fuelWidget.position.y = GetPrivateProfileInt("Fuel", "PosY", fuelWidget.position.y, ini_file);
+
 
 	// [Tyres]
 	tyresWidget.enabled = GetPrivateProfileInt("Tyres", "Enabled", true, ini_file);
@@ -705,10 +711,12 @@ void VHUD::LoadConfig(const char * ini_file)
 	tyresWidget.interval = GetPrivateProfileInt("Tyres", "Interval", 3000, ini_file);
 	tyresWidget.threshold = GetPrivateProfileInt("Tyres", "Threshold", 125, ini_file);
 
+
 	// [Engine]
 	engineWidget.enabled = GetPrivateProfileInt("engine", "Enabled", true, ini_file);
 	engineWidget.position.x = (int)GetPrivateProfileInt("engine", "PosX", 0, ini_file) + screenCenter;
 	engineWidget.position.y = GetPrivateProfileInt("engine", "PosY", engineWidget.position.y, ini_file);
+
 
 	// [Rain]
 	rainWidget.enabled = GetPrivateProfileInt("Rain", "Enabled", true, ini_file);
@@ -717,32 +725,38 @@ void VHUD::LoadConfig(const char * ini_file)
 	rainWidget.mode = GetPrivateProfileInt("Rain", "Mode", 1, ini_file);
 	rainWidget.interval = GetPrivateProfileInt("Rain", "Interval", 3000, ini_file);
 
+
 	// [Inputs]
 	inputsWidget.enabled = GetPrivateProfileInt("Inputs", "Enabled", true, ini_file);
 	inputsWidget.showFilteredInputs = GetPrivateProfileInt("Inputs", "FilteredInputs", false, ini_file);
 	inputsWidget.position.x = (int)GetPrivateProfileInt("Inputs", "PosX", 0, ini_file) + screenCenter;
 	inputsWidget.position.y = GetPrivateProfileInt("Inputs", "PosY", inputsWidget.position.y, ini_file);
 
+
 	// [FPSMeter]
 	fpsWidget.enabled = GetPrivateProfileInt("FPS", "Enabled", true, ini_file);
 	fpsWidget.position.x = (int)GetPrivateProfileInt("FPS", "PosX", 0, ini_file) + screenCenter;
 	fpsWidget.position.y = GetPrivateProfileInt("FPS", "PosY", fpsWidget.position.y, ini_file);
+
 
 	// [StartingLights]
 	lightsWidget.enabled = GetPrivateProfileInt("StartingLights", "Enabled", true, ini_file);
 	lightsWidget.position.x = (int)GetPrivateProfileInt("StartingLights", "PosX", 0, ini_file) + screenCenter;
 	lightsWidget.position.y = GetPrivateProfileInt("StartingLights", "PosY", lightsWidget.position.y, ini_file);
 
+
 	// [Gear]
 	gearWidget.enabled = GetPrivateProfileInt("Gear", "Enabled", true, ini_file);
 	gearWidget.position.x = (int)GetPrivateProfileInt("Gear", "PosX", 0, ini_file) + screenCenter;
 	gearWidget.position.y = GetPrivateProfileInt("Gear", "PosY", gearWidget.position.y, ini_file);
+
 
 	// [Grid] section
 	gridWidget.enabled = GetPrivateProfileInt("Grid", "Enabled", true, ini_file);
 	gridWidget.position.x = (int)GetPrivateProfileInt("Grid", "PosX", 0, ini_file) + screenCenter;
 	gridWidget.position.y = GetPrivateProfileInt("Grid", "PosY", gearWidget.position.y, ini_file);
 	gridWidget.nDriversToShow = GetPrivateProfileInt("Grid", "Drivers", 3, ini_file);
+	gridWidget.filterVehiclesInGarage = GetPrivateProfileInt("Grid", "FilterVehiclesInGarage", true, ini_file);
 	gridWidget.PlayerOnTrackColor = GetPrivateProfileInt("Grid", "PlayerOnTrackColor", 0xFFd6a21f, ini_file);
 	gridWidget.PlayerInPitsColor = GetPrivateProfileInt("Grid", "PlayerInPitsColor", 0xFFaa8119, ini_file);
 	gridWidget.EqualCarOnTrackColor = GetPrivateProfileInt("Grid", "EqualCarOnTrackColor", 0xFFe6e6e6, ini_file);
@@ -752,11 +766,12 @@ void VHUD::LoadConfig(const char * ini_file)
 	gridWidget.SlowerCarOnTrackColor = GetPrivateProfileInt("Grid", "SlowerCarOnTrackColor", 0xFF2c88ce, ini_file);
 	gridWidget.SlowerCarInPitsColor = GetPrivateProfileInt("Grid", "SlowerCarInPitsColor", 0xFF1b547f, ini_file);
 
+
 	// [ClassColors] section
 	gridWidget.userClassColorKeys.clear();
 	gridWidget.userClassColorValues.clear();
 	char * pBigString = new char[1024];
-	DWORD dw = GetPrivateProfileSection("ClassColors", pBigString, 1024, CONFIG_FILE);
+	DWORD dw = GetPrivateProfileSection("ClassColors", pBigString, 1024, ini_file);
 	for (LPCSTR pToken = pBigString; pToken && *pToken; pToken = NextToken(pToken))
 	{
 		string str = pToken;
@@ -764,17 +779,18 @@ void VHUD::LoadConfig(const char * ini_file)
 		string keySubString = str.substr(0, breakpos);
 		char key[1024];
 		strncpy(key, keySubString.c_str(), sizeof(key));
-		D3DCOLOR value = GetPrivateProfileInt("ClassColors", key, 0xFFFFFFFF, CONFIG_FILE);
+		D3DCOLOR value = GetPrivateProfileInt("ClassColors", key, 0xFFFFFFFF, ini_file);
 
 		gridWidget.userClassColorKeys.push_back(key);
 		gridWidget.userClassColorValues.push_back(value);
 	}
 
+
 	// [VehicleClasses] section
 	gridWidget.userClassKeys.clear();
 	gridWidget.userClassValues.clear();
 	char * pBigString2 = new char[1024];
-	DWORD dw2 = GetPrivateProfileSection("VehicleClasses", pBigString2, 1024, CONFIG_FILE);
+	DWORD dw2 = GetPrivateProfileSection("VehicleClasses", pBigString2, 1024, ini_file);
 	for (LPCSTR pToken = pBigString2; pToken && *pToken; pToken = NextToken(pToken))
 	{
 		string str = pToken;
@@ -783,7 +799,7 @@ void VHUD::LoadConfig(const char * ini_file)
 		char key[1024];
 		strncpy(key, keySubString.c_str(), sizeof(key));
 		char value[1024];
-		GetPrivateProfileString("VehicleClasses", key, "ERROR", value, 1024, CONFIG_FILE);
+		GetPrivateProfileString("VehicleClasses", key, "ERROR", value, 1024, ini_file);
 
 		gridWidget.userClassKeys.push_back(key);
 		gridWidget.userClassValues.push_back(value);

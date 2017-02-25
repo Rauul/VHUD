@@ -20,7 +20,7 @@
 #include <Windows.h>
 
 #define PLUGIN_NAME					"V-HUD"
-#define PLUGIN_VERSION				"0.81"
+#define PLUGIN_VERSION				"0.83b"
 
 #if _WIN64
 #define CONFIG_FILE					"Bin64\\Plugins\\VHUD\\VHUD.ini"
@@ -129,7 +129,7 @@ public:
 	bool isPlayer = false;
 	bool displayedWelcomeMessage = false;
 	float scaleFactor = 0;
-	D3DXMATRIX scaleMatrix;
+	
 	DWORD timeLoaded = GetTickCount();
 	LPD3DXSPRITE splashSprite = NULL;
 	LPDIRECT3DTEXTURE9 splashTexture = NULL;

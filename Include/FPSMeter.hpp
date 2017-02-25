@@ -3,7 +3,6 @@
 #include "InternalsPlugin.hpp"
 #include "Defaults.hpp"
 #include <d3dx9.h>
-//#include <Windows.h>
 
 #if _WIN64
 #define FPS_ICON				"Bin64\\Plugins\\VHUD\\Images\\FPS.png"

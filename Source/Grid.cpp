@@ -11,6 +11,11 @@ void Grid::StartSession(const ScoringInfoV01 & info)
 
 void Grid::Init(const ScreenInfoV01 & info)
 {
+	GetPrivateProfileString("Config", "Font", "Tahoma", smallFontDesc.FaceName, 32, CONFIG_FILE);
+	smallFontDesc.Height = GetPrivateProfileInt("Config", "SmallFontSize", 20, CONFIG_FILE);
+	GetPrivateProfileString("Config", "Font", "Tahoma", bigFontDesc.FaceName, 32, CONFIG_FILE);
+	bigFontDesc.Height = GetPrivateProfileInt("Config", "BigFontSize", 40, CONFIG_FILE);
+
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &boxSprite);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, BACKGROUND_TEXTURE, &boxTexture);
 	D3DXCreateFontIndirect((LPDIRECT3DDEVICE9)info.mDevice, &bigFontDesc, &bigFont);
@@ -78,8 +83,7 @@ void Grid::Update(const ScoringInfoV01 & info)
 	{
 		VehicleScoringInfoV01 &vinfo = info.mVehicle[l];
 
-		Driver driver(vinfo.mDriverName, vinfo.mVehicleClass, vinfo.mTotalLaps, vinfo.mLapDist, info.mLapDist, vinfo.mTimeIntoLap, vinfo.mEstimatedLapTime, vinfo.mInPits, vinfo.mIsPlayer, vinfo.mPlace);
-
+		Driver driver(vinfo.mDriverName, vinfo.mVehicleClass, vinfo.mTotalLaps, vinfo.mLapDist, info.mLapDist, vinfo.mTimeIntoLap, vinfo.mEstimatedLapTime, vinfo.mInPits, vinfo.mIsPlayer, vinfo.mPlace, vinfo.mInGarageStall);
 		if (vinfo.mIsPlayer)
 		{
 			playerSlot = (int)drivers.size();
@@ -167,6 +171,18 @@ void Grid::Update(const ScoringInfoV01 & info)
 				drivers[j].placeInClass = placeInClass;
 				drivers[j].classColor = i;
 				placeInClass++;
+			}
+		}
+	}
+
+	if (filterVehiclesInGarage)
+	{
+		for (int i = 0; i < (int)drivers.size(); i++)
+		{
+			if (drivers[i].inGarageStall && !drivers[i].isPlayer)
+			{
+				drivers.erase(drivers.begin() + i);
+				i--;
 			}
 		}
 	}

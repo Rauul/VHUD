@@ -53,6 +53,7 @@ public:
 	bool enabled = true;
 	bool isMultiClass = false;
 	bool isTimedSession = false;
+	bool filterVehiclesInGarage = true;
 	int nDriversToShow = 3;
 	double currentTime = 0;
 	double endTime = 0;

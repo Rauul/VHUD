@@ -19,9 +19,6 @@ void StartingLights::Init(const ScreenInfoV01 & info)
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, STARTINGLIGHT_YELLOW, &yellowLightTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, STARTINGLIGHT_GREEN, &greenLightTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, BACKGROUND_TEXTURE, &boxTexture);
-
-	position.x = info.mWidth / 2 - size.right / 2;
-	position.y = info.mHeight * 0.2;
 }
 
 void StartingLights::Uninit(const ScreenInfoV01 & info)

@@ -4,11 +4,12 @@
 
 void Gear::Init(const ScreenInfoV01 & info)
 {
+	GetPrivateProfileString("Config", "Font", "Tahoma", gearFontDesc.FaceName, 32, CONFIG_FILE);
+	gearFontDesc.Height = GetPrivateProfileInt("Config", "GearFontSize", 60, CONFIG_FILE);
+
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &boxSprite);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, BACKGROUND_TEXTURE, &boxTexture);
-	D3DXCreateFontIndirect((LPDIRECT3DDEVICE9)info.mDevice, &bigFontDesc, &bigFont);
-
-	position.x = info.mWidth / 2 - size.right / 2;
+	D3DXCreateFontIndirect((LPDIRECT3DDEVICE9)info.mDevice, &gearFontDesc, &gearFont);
 }
 
 void Gear::Uninit(const ScreenInfoV01 & info)
@@ -21,9 +22,9 @@ void Gear::Uninit(const ScreenInfoV01 & info)
 		boxSprite->Release();
 		boxSprite = NULL;
 	}
-	if (bigFont) {
-		bigFont->Release();
-		bigFont = NULL;
+	if (gearFont) {
+		gearFont->Release();
+		gearFont = NULL;
 	}
 }
 
@@ -31,21 +32,21 @@ void Gear::PreReset(const ScreenInfoV01 & info)
 {
 	if (boxSprite)
 		boxSprite->OnLostDevice();
-	if (bigFont)
-		bigFont->OnLostDevice();
+	if (gearFont)
+		gearFont->OnLostDevice();
 }
 
 void Gear::PostReset(const ScreenInfoV01 & info)
 {
 	if (boxSprite)
 		boxSprite->OnResetDevice();
-	if (bigFont)
-		bigFont->OnResetDevice();
+	if (gearFont)
+		gearFont->OnResetDevice();
 }
 
 void Gear::Update(const TelemInfoV01 & info)
 {
-	shiftLight = info.mEngineRPM > info.mEngineMaxRPM * 0.98;
+	shiftLight = info.mEngineRPM > info.mEngineMaxRPM * 0.97;
 
 	if (info.mGear == -1)
 		sprintf(gear, "%c", 'R');
@@ -129,5 +130,5 @@ void Gear::DrawTxt()
 	if (shiftLight)
 		color = 0xFFFF0000;
 
-	bigFont->DrawText(NULL, gear, -1, &pos, DT_CENTER | DT_VCENTER, color);
+	gearFont->DrawText(NULL, gear, -1, &pos, DT_CENTER | DT_VCENTER, color);
 }

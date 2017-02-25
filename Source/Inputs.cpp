@@ -12,8 +12,6 @@ void Inputs::Init(const ScreenInfoV01 & info)
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, BACKGROUND_TEXTURE, &boxTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, INPUTS_BACKGROUND, &backgroundTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, INPUTS_BAR, &barTexture);
-
-	position.x = info.mWidth / 2 - size.right / 2;
 }
 
 void Inputs::Uninit(const ScreenInfoV01 & info)

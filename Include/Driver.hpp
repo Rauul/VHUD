@@ -10,7 +10,7 @@ class Driver {
 public:
 	Driver();
 
-	Driver(char[32], char[32], short, double, double, double, double, bool, bool, unsigned short);
+	Driver(char[32], char[32], short, double, double, double, double, bool, bool, unsigned short, bool);
 
 	char driverName[32];
 	char vehicleClass[32];
@@ -27,6 +27,7 @@ public:
 	unsigned short place;
 	int placeInClass;
 	int classColor;
+	bool inGarageStall;
 
 private:
 };

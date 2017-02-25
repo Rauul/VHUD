@@ -4,13 +4,14 @@
 
 void Engine::Init(const ScreenInfoV01 & info)
 {
+	GetPrivateProfileString("Config", "Font", "Tahoma", smallFontDesc.FaceName, 32, CONFIG_FILE);
+	smallFontDesc.Height = GetPrivateProfileInt("Config", "SmallFontSize", 20, CONFIG_FILE);
+
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &iconSprite);
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &boxSprite);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, ENGINE_ICON, &iconTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, BACKGROUND_TEXTURE, &boxTexture);
 	D3DXCreateFontIndirect((LPDIRECT3DDEVICE9)info.mDevice, &smallFontDesc, &smallFont);
-
-	position.x = info.mWidth / 2 - size.right / 2;
 }
 
 void Engine::Uninit(const ScreenInfoV01 & info)
