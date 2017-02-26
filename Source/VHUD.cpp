@@ -677,23 +677,23 @@ void VHUD::ResetPositions(const ScreenInfoV01& info)
 {
 	float y = info.mHeight * 0.15;
 	lightsWidget.position = { screenCenter, y, 0 };
-	y += 128;
+	//y += 128;
 	fuelWidget.position = { screenCenter, y, 0 };
-	y += 65;
+	//y += 65;
 	tyresWidget.position = { screenCenter, y, 0 };
-	y += 65;
+	//y += 65;
 	engineWidget.position = { screenCenter, y, 0 };
-	y += 65;
+	//y += 65;
 	rainWidget.position = { screenCenter, y, 0 };
-	y += 65;
+	//y += 65;
 	inputsWidget.position = { screenCenter, y, 0 };
-	y += 65;
+	//y += 65;
 	fpsWidget.position = { screenCenter, y, 0 };
-	y += 65;
+	//y += 65;
 	gearWidget.position = { screenCenter, y, 0 };
-	y += 65;
+	//y += 65;
 	gridWidget.position = { screenCenter, y, 0 };
-	y += 65;
+	//y += 65;
 	brakesWidget.position = { screenCenter, y, 0 };
 }
 
