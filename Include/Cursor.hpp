@@ -36,7 +36,8 @@ public:
 		FPSMeter,
 		StartingLights,
 		Gear,
-		Grid
+		Grid,
+		Brakes
 	};
 
 	LockedTo lockedTo = LockedTo::None;

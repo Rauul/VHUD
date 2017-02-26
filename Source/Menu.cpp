@@ -14,6 +14,7 @@ void Menu::Init(const ScreenInfoV01 & info)
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &lightIconSprite);
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &gearIconSprite);
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &gridIconSprite);
+	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &brakesIconSprite);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, BACKGROUND_TEXTURE, &boxTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, FUEL_ICON, &fuelIconTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, TYRES_ICON, &tyresIconTexture);
@@ -24,6 +25,7 @@ void Menu::Init(const ScreenInfoV01 & info)
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, STARTINGLIGHTS_ICON, &lightIconTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, GEAR_ICON, &gearIconTexture);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, GRID_ICON, &gridIconTexture);
+	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, BRAKES_ICON, &brakesIconTexture);
 
 	position.x = info.mWidth / 2 - size.right / 2;
 	position.y = info.mHeight / 2 - size.bottom / 2;
@@ -111,6 +113,14 @@ void Menu::Uninit(const ScreenInfoV01 & info)
 		gridIconSprite->Release();
 		gridIconSprite = NULL;
 	}
+	if (brakesIconTexture) {
+		brakesIconTexture->Release();
+		brakesIconTexture = NULL;
+	}
+	if (brakesIconSprite) {
+		brakesIconSprite->Release();
+		brakesIconSprite = NULL;
+	}
 }
 
 void Menu::PreReset(const ScreenInfoV01 & info)
@@ -133,6 +143,8 @@ void Menu::PreReset(const ScreenInfoV01 & info)
 		gearIconSprite->OnLostDevice();
 	if (gridIconSprite)
 		gridIconSprite->OnLostDevice();
+	if (brakesIconSprite)
+		brakesIconSprite->OnLostDevice();
 	if (boxSprite)
 		boxSprite->OnLostDevice();
 }
@@ -157,6 +169,8 @@ void Menu::PostReset(const ScreenInfoV01 & info)
 		gearIconSprite->OnResetDevice();
 	if (gridIconSprite)
 		gridIconSprite->OnResetDevice();
+	if (brakesIconSprite)
+		brakesIconSprite->OnResetDevice();
 	if (boxSprite)
 		boxSprite->OnResetDevice();
 }
@@ -169,14 +183,14 @@ void Menu::Draw(bool inEditMode)
 	DrawBox();
 	DrawIcon(0, fuelIconSprite, fuelIconTexture);
 	DrawIcon(1, tyresIconSprite, tyresIconTexture);
-	DrawIcon(2, engineIconSprite, engineIconTexture);
-	DrawIcon(3, rainIconSprite, rainIconTexture);
-	DrawIcon(4, inputsIconSprite, inputsIconTexture);
-	DrawIcon(5, fpsIconSprite, fpsIconTexture);
-	DrawIcon(6, lightIconSprite, lightIconTexture);
-	DrawIcon(7, gearIconSprite, gearIconTexture);
+	DrawIcon(2, brakesIconSprite, brakesIconTexture);
+	DrawIcon(3, engineIconSprite, engineIconTexture);
+	DrawIcon(4, rainIconSprite, rainIconTexture);
+	DrawIcon(5, gearIconSprite, gearIconTexture);
+	DrawIcon(6, inputsIconSprite, inputsIconTexture);
+	DrawIcon(7, lightIconSprite, lightIconTexture);
 	DrawIcon(8, gridIconSprite, gridIconTexture);
-	/*DrawIcon(9, fuelIconSprite, fuelIconTexture);*/
+	DrawIcon(9, fpsIconSprite, fpsIconTexture);
 }
 
 void Menu::DrawBox()

@@ -50,6 +50,7 @@ FPSMeter fpsWidget;
 StartingLights lightsWidget;
 Gear gearWidget;
 Grid gridWidget;
+Brakes brakesWidget;
 Menu menu;
 Cursor cursor;
 
@@ -90,14 +91,12 @@ void VHUD::Load()
 	fuelWidget.ResetFuelUsage();	
 }
 
-
 void VHUD::EnterRealtime()
 {
 	inRealtime = true;
 	inEditMode = false;
 	fuelWidget.firstUpdate = true;
 }
-
 
 void VHUD::ExitRealtime()
 {
@@ -132,6 +131,7 @@ void VHUD::UpdateTelemetry(const TelemInfoV01& info)
 	engineWidget.Update(info);
 	inputsWidget.Update(info);
 	gearWidget.Update(info);
+	brakesWidget.Update(info);
 }
 
 void VHUD::UpdateScoring(const ScoringInfoV01& info)
@@ -176,6 +176,7 @@ void VHUD::InitScreen(const ScreenInfoV01& info)
 	lightsWidget.Init(info);
 	gearWidget.Init(info);
 	gridWidget.Init(info);
+	brakesWidget.Init(info);
 }
 
 void VHUD::UninitScreen(const ScreenInfoV01& info)
@@ -200,6 +201,7 @@ void VHUD::UninitScreen(const ScreenInfoV01& info)
 	lightsWidget.Uninit(info);
 	gearWidget.Uninit(info);
 	gridWidget.Uninit(info);
+	brakesWidget.Uninit(info);
 }
 
 void VHUD::RenderScreenBeforeOverlays(const ScreenInfoV01& info)
@@ -234,6 +236,7 @@ void VHUD::PreReset(const ScreenInfoV01& info)
 	lightsWidget.PreReset(info);
 	gearWidget.PreReset(info);
 	gridWidget.PreReset(info);
+	brakesWidget.PreReset(info);
 }
 
 void VHUD::PostReset(const ScreenInfoV01& info)
@@ -252,6 +255,7 @@ void VHUD::PostReset(const ScreenInfoV01& info)
 	lightsWidget.PostReset(info);
 	gearWidget.PostReset(info);
 	gridWidget.PostReset(info);
+	brakesWidget.PostReset(info);
 }
 
 void VHUD::DrawGraphics(const ScreenInfoV01& info)
@@ -268,6 +272,7 @@ void VHUD::DrawGraphics(const ScreenInfoV01& info)
 	lightsWidget.Draw(inEditMode);
 	gearWidget.Draw(inEditMode);
 	gridWidget.Draw(inEditMode);
+	brakesWidget.Draw(inEditMode);
 	cursor.Draw(inEditMode);
 }
 
@@ -374,6 +379,15 @@ bool VHUD::MouseIsOver(Grid)
 		return false;
 }
 
+bool VHUD::MouseIsOver(Brakes)
+{
+	if (cursor.position.y >= brakesWidget.position.y && cursor.position.y <= brakesWidget.position.y + brakesWidget.size.bottom &&
+		cursor.position.x >= brakesWidget.position.x && cursor.position.x <= brakesWidget.position.x + brakesWidget.size.right)
+		return true;
+	else
+		return false;
+}
+
 bool VHUD::IsPlayer(const ScoringInfoV01 & info)
 {
 	if (info.mNumVehicles < 1)
@@ -445,6 +459,11 @@ void VHUD::UpdatePositions()
 			cursor.lockedTo = Cursor::LockedTo::Grid;
 			gridWidget.UpdatePosition();
 		}
+		else if (MouseIsOver(brakesWidget) && (cursor.lockedTo == Cursor::LockedTo::Brakes || cursor.lockedTo == Cursor::LockedTo::None))
+		{
+			cursor.lockedTo = Cursor::LockedTo::Brakes;
+			brakesWidget.UpdatePosition();
+		}
 	}
 	else
 	{
@@ -506,7 +525,7 @@ void VHUD::MenuEvents()
 			{
 				if (!mouseDownLastFrame)
 				{
-					engineWidget.enabled = !engineWidget.enabled;
+					brakesWidget.enabled = !brakesWidget.enabled;
 				}
 				mouseDownLastFrame = true;
 			}
@@ -524,7 +543,7 @@ void VHUD::MenuEvents()
 			{
 				if (!mouseDownLastFrame)
 				{
-					rainWidget.enabled = !rainWidget.enabled;
+					engineWidget.enabled = !engineWidget.enabled;
 				}
 				mouseDownLastFrame = true;
 			}
@@ -542,7 +561,7 @@ void VHUD::MenuEvents()
 			{
 				if (!mouseDownLastFrame)
 				{
-					inputsWidget.enabled = !inputsWidget.enabled;
+					rainWidget.enabled = !rainWidget.enabled;
 				}
 				mouseDownLastFrame = true;
 			}
@@ -560,7 +579,7 @@ void VHUD::MenuEvents()
 			{
 				if (!mouseDownLastFrame)
 				{
-					fpsWidget.enabled = !fpsWidget.enabled;
+					gearWidget.enabled = !gearWidget.enabled;
 				}
 				mouseDownLastFrame = true;
 			}
@@ -578,7 +597,7 @@ void VHUD::MenuEvents()
 			{
 				if (!mouseDownLastFrame)
 				{
-					lightsWidget.enabled = !lightsWidget.enabled;
+					inputsWidget.enabled = !inputsWidget.enabled;
 				}
 				mouseDownLastFrame = true;
 			}
@@ -596,7 +615,7 @@ void VHUD::MenuEvents()
 			{
 				if (!mouseDownLastFrame)
 				{
-					gearWidget.enabled = !gearWidget.enabled;
+					lightsWidget.enabled = !lightsWidget.enabled;
 				}
 				mouseDownLastFrame = true;
 			}
@@ -615,6 +634,24 @@ void VHUD::MenuEvents()
 				if (!mouseDownLastFrame)
 				{
 					gridWidget.enabled = !gridWidget.enabled;
+				}
+				mouseDownLastFrame = true;
+			}
+			else
+			{
+				mouseDownLastFrame = false;
+			}
+		}
+		else if (cursor.position.y >= menu.position.y + 5 && cursor.position.y <= menu.position.y + 69 &&
+			cursor.position.x >= menu.position.x + 5 + 68 * 9 && cursor.position.x <= menu.position.x + 69 + 68 * 9)
+		{
+			menu.mouseInSlot = 9;
+
+			if ((GetKeyState(VK_LBUTTON) & 0x100) != 0)
+			{
+				if (!mouseDownLastFrame)
+				{
+					fpsWidget.enabled = !fpsWidget.enabled;
 				}
 				mouseDownLastFrame = true;
 			}
@@ -656,6 +693,8 @@ void VHUD::ResetPositions(const ScreenInfoV01& info)
 	gearWidget.position = { screenCenter, y, 0 };
 	y += 65;
 	gridWidget.position = { screenCenter, y, 0 };
+	y += 65;
+	brakesWidget.position = { screenCenter, y, 0 };
 }
 
 void VHUD::DrawSplashScreen()
@@ -682,13 +721,14 @@ void VHUD::DrawSplashScreen()
 void VHUD::LoadConfig(const char * ini_file)
 {
 	// [Config]
-	fuelWidget.useBorder = tyresWidget.useBorder = engineWidget.useBorder = rainWidget.useBorder = inputsWidget.useBorder = fpsWidget.useBorder = gearWidget.useBorder = gridWidget.useBorder =
+	fuelWidget.useBorder = tyresWidget.useBorder = engineWidget.useBorder = rainWidget.useBorder = inputsWidget.useBorder = 
+		fpsWidget.useBorder = gearWidget.useBorder = gridWidget.useBorder = brakesWidget.useBorder = 
 		GetPrivateProfileInt("Config", "Borders", USE_BORDERS, ini_file);
 	fuelWidget.backgroundColor = tyresWidget.backgroundColor = engineWidget.backgroundColor = rainWidget.backgroundColor = inputsWidget.backgroundColor = fpsWidget.backgroundColor = 
-		gearWidget.backgroundColor = gridWidget.backgroundColor =
+		gearWidget.backgroundColor = gridWidget.backgroundColor = brakesWidget.backgroundColor =
 		GetPrivateProfileInt("Config", "BackgroundColor", BACKGROUND_COLOR, ini_file);
 	fuelWidget.borderColor = tyresWidget.borderColor = engineWidget.borderColor = rainWidget.borderColor = inputsWidget.borderColor = fpsWidget.borderColor = gearWidget.borderColor = 
-		gridWidget.borderColor =
+		gridWidget.borderColor = brakesWidget.borderColor =
 		GetPrivateProfileInt("Config", "BorderColor", BORDER_COLOR, ini_file);
 
 
@@ -710,6 +750,12 @@ void VHUD::LoadConfig(const char * ini_file)
 	tyresWidget.mode = GetPrivateProfileInt("Tyres", "Mode", 1, ini_file);
 	tyresWidget.interval = GetPrivateProfileInt("Tyres", "Interval", 3000, ini_file);
 	tyresWidget.threshold = GetPrivateProfileInt("Tyres", "Threshold", 125, ini_file);
+
+
+	// [Brakes]
+	brakesWidget.enabled = GetPrivateProfileInt("Brakes", "Enabled", true, ini_file);
+	brakesWidget.position.x = (int)GetPrivateProfileInt("Brakes", "PosX", 0, ini_file) + screenCenter;
+	brakesWidget.position.y = GetPrivateProfileInt("Brakes", "PosY", brakesWidget.position.y, ini_file);
 
 
 	// [Engine]
@@ -826,6 +872,13 @@ void VHUD::SaveConfig(const char *ini_file)
 	WritePrivateProfileString("Tyres", "PosX", buffer, ini_file);
 	sprintf(buffer, " %.0f", tyresWidget.position.y);
 	WritePrivateProfileString("Tyres", "PosY", buffer, ini_file);
+
+	// [Brakes]
+	WritePrivateProfileString("Brakes", "Enabled", brakesWidget.enabled ? "1" : "0", ini_file);
+	sprintf(buffer, " %.0f", brakesWidget.position.x - screenCenter);
+	WritePrivateProfileString("Brakes", "PosX", buffer, ini_file);
+	sprintf(buffer, " %.0f", brakesWidget.position.y);
+	WritePrivateProfileString("Brakes", "PosY", buffer, ini_file);
 
 	// [Engine]
 	WritePrivateProfileString("Engine", "Enabled", engineWidget.enabled ? "1" : "0", ini_file);

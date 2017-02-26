@@ -15,12 +15,13 @@
 #include "StartingLights.hpp"
 #include "Gear.hpp"
 #include "Grid.hpp"
+#include "Brakes.hpp"
 #include <d3dx9.h>
 #include <sstream>
 #include <Windows.h>
 
 #define PLUGIN_NAME					"V-HUD"
-#define PLUGIN_VERSION				"0.83b"
+#define PLUGIN_VERSION				"0.83"
 
 #if _WIN64
 #define CONFIG_FILE					"Bin64\\Plugins\\VHUD\\VHUD.ini"
@@ -107,6 +108,7 @@ public:
 	bool MouseIsOver(StartingLights);
 	bool MouseIsOver(Gear);
 	bool MouseIsOver(Grid);
+	bool MouseIsOver(Brakes);
 	bool IsPlayer(const ScoringInfoV01& info);
 	void UpdatePositions();
 	void MenuEvents();

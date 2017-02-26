@@ -122,7 +122,7 @@ struct TelemWheelV01
   double mSuspensionDeflection;  // meters
   double mRideHeight;            // meters
   double mSuspForce;             // pushrod load in Newtons
-  double mBrakeTemp;             // Celsius
+  double mBrakeTemp;             // Kelvin (subtract 273.15 to get Celsius)
   double mBrakePressure;         // currently 0.0-1.0, depending on driver input and unfilteredBrake balance; will convert to true unfilteredBrake pressure (kPa) in future
 
   double mRotation;              // radians/sec

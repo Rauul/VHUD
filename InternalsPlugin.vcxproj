@@ -280,6 +280,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Brakes.hpp" />
     <ClInclude Include="Include\Defaults.hpp" />
     <ClInclude Include="Include\Cursor.hpp" />
     <ClInclude Include="Include\Driver.hpp" />
@@ -298,6 +299,7 @@
     <ClInclude Include="Include\VHUD.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Brakes.cpp" />
     <ClCompile Include="Source\Cursor.cpp" />
     <ClCompile Include="Source\Driver.cpp" />
     <ClCompile Include="Source\Engine.cpp" />
