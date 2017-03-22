@@ -38,7 +38,7 @@ public:
 	double tempFR = 0.00;
 	double tempRL = 0.00;
 	double tempRR = 0.00;
-	double threshold = 125;
+	double threshold = 1000;
 	bool useBorder = true;
 	bool enabled = true;
 	bool showWear = true;

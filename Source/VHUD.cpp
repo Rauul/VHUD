@@ -756,6 +756,7 @@ void VHUD::LoadConfig(const char * ini_file)
 	brakesWidget.enabled = GetPrivateProfileInt("Brakes", "Enabled", true, ini_file);
 	brakesWidget.position.x = (int)GetPrivateProfileInt("Brakes", "PosX", 0, ini_file) + screenCenter;
 	brakesWidget.position.y = GetPrivateProfileInt("Brakes", "PosY", brakesWidget.position.y, ini_file);
+	brakesWidget.threshold = GetPrivateProfileInt("Brakes", "Threshold", 1000, ini_file);
 
 
 	// [Engine]
