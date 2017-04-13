@@ -29,7 +29,7 @@ public:
 	void DrawIcon();
 	void DrawTxt();
 		
-	RECT size = { 0, 0, 220, 65 };
+	RECT size = { 0, 0, 260, 65 };
 	D3DXVECTOR3 position = { 0, 600, 0 };
 	D3DCOLOR backgroundColor = 0xFF000000;
 	D3DCOLOR borderColor = 0xFFAAAAAA;
@@ -45,12 +45,14 @@ public:
 	int bigFontSize = 40;
 	int playerSlot = 0;
 	int oldLap = 0;
+	double fuelCapacity = 0.00;
 	double quantity = 0.00;
 	double quantityLastLap = 0.00;
 	double usedPerLap[3] = { 0, 0, 0 };
 	double bestLapLastSession = 0;
 	double lastLapStartET = 0.00;
 	double lapQuantity = 0.00;
+	double fuelNeededToFinish = 0.00;
 	int timeQuantityTotal = 0;
 	int timeQuantityMinutes = 0;
 	int timeQuantitySeconds = 0;

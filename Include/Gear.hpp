@@ -31,9 +31,12 @@ public:
 	D3DCOLOR borderColor = 0xFFAAAAAA;
 	LPD3DXFONT gearFont = NULL;
 	D3DXFONT_DESC gearFontDesc = { GEAR_FONT_SIZE, 0, 1000, 0, false, DEFAULT_CHARSET, OUT_TT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH, BIG_FONT };
+	LPD3DXFONT smallFont = NULL;
+	D3DXFONT_DESC smallFontDesc = { SMALL_FONT_SIZE, 0, 700, 0, false, DEFAULT_CHARSET, OUT_TT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH, SMALL_FONT };
 	LPD3DXSPRITE boxSprite = NULL;
 	LPDIRECT3DTEXTURE9 boxTexture = NULL;
 	char gear[4] = "-";
+	char speedKPH[8] = "0";
 	bool shiftLight = false;
 	bool useBorder = true;
 	bool enabled = true;

@@ -4,12 +4,15 @@
 
 void Gear::Init(const ScreenInfoV01 & info)
 {
+	GetPrivateProfileString("Config", "Font", "Tahoma", smallFontDesc.FaceName, 32, CONFIG_FILE);
+	smallFontDesc.Height = GetPrivateProfileInt("Config", "SmallFontSize", 20, CONFIG_FILE);
 	GetPrivateProfileString("Config", "Font", "Tahoma", gearFontDesc.FaceName, 32, CONFIG_FILE);
 	gearFontDesc.Height = GetPrivateProfileInt("Config", "GearFontSize", 60, CONFIG_FILE);
 
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &boxSprite);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, BACKGROUND_TEXTURE, &boxTexture);
 	D3DXCreateFontIndirect((LPDIRECT3DDEVICE9)info.mDevice, &gearFontDesc, &gearFont);
+	D3DXCreateFontIndirect((LPDIRECT3DDEVICE9)info.mDevice, &smallFontDesc, &smallFont);
 }
 
 void Gear::Uninit(const ScreenInfoV01 & info)
@@ -26,6 +29,10 @@ void Gear::Uninit(const ScreenInfoV01 & info)
 		gearFont->Release();
 		gearFont = NULL;
 	}
+	if (smallFont) {
+		smallFont->Release();
+		smallFont = NULL;
+	}
 }
 
 void Gear::PreReset(const ScreenInfoV01 & info)
@@ -33,7 +40,9 @@ void Gear::PreReset(const ScreenInfoV01 & info)
 	if (boxSprite)
 		boxSprite->OnLostDevice();
 	if (gearFont)
-		gearFont->OnLostDevice();
+		gearFont->OnLostDevice(); 
+	if (smallFont)
+		smallFont->OnLostDevice();
 }
 
 void Gear::PostReset(const ScreenInfoV01 & info)
@@ -42,6 +51,8 @@ void Gear::PostReset(const ScreenInfoV01 & info)
 		boxSprite->OnResetDevice();
 	if (gearFont)
 		gearFont->OnResetDevice();
+	if (smallFont)
+		smallFont->OnResetDevice();
 }
 
 void Gear::Update(const TelemInfoV01 & info)
@@ -55,6 +66,8 @@ void Gear::Update(const TelemInfoV01 & info)
 		sprintf(gear, "%c", '-');
 	else
 		sprintf(gear, "%i", info.mGear);
+
+	sprintf(speedKPH, "%.0f", abs(info.mLocalVel.z * 3.6));
 }
 
 void Gear::UpdatePosition()
@@ -125,10 +138,16 @@ void Gear::DrawTxt()
 	pos.left = position.x;
 	pos.top = position.y;
 	pos.right = pos.left + 64;
-	pos.bottom = pos.top + 65;
+	pos.bottom = pos.top + 45;
 
 	if (shiftLight)
 		color = 0xFFFF0000;
 
 	gearFont->DrawText(NULL, gear, -1, &pos, DT_CENTER | DT_VCENTER, color);
+
+	color = 0xFFFFFFFF;
+	pos.top += 45;
+	pos.bottom += 17;
+
+	smallFont->DrawText(NULL, speedKPH, -1, &pos, DT_CENTER | DT_VCENTER, color);
 }

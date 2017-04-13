@@ -88,7 +88,7 @@ void VHUD::EndSession()
 void VHUD::Load()
 {
 	timeLoaded = GetTickCount();
-	fuelWidget.ResetFuelUsage();	
+	fuelWidget.ResetFuelUsage();
 }
 
 void VHUD::EnterRealtime()
@@ -414,52 +414,52 @@ void VHUD::UpdatePositions()
 
 	if ((GetKeyState(VK_LBUTTON) & 0x100) != 0)
 	{
-		if (MouseIsOver(fuelWidget) && (cursor.lockedTo == Cursor::LockedTo::Fuel || cursor.lockedTo == Cursor::LockedTo::None))
+		if (fuelWidget.enabled && MouseIsOver(fuelWidget) && (cursor.lockedTo == Cursor::LockedTo::Fuel || cursor.lockedTo == Cursor::LockedTo::None))
 		{
 			cursor.lockedTo = Cursor::LockedTo::Fuel;
 			fuelWidget.UpdatePosition();
 		}
-		else if (MouseIsOver(tyresWidget) && (cursor.lockedTo == Cursor::LockedTo::Tyres || cursor.lockedTo == Cursor::LockedTo::None))
+		else if (tyresWidget.enabled && MouseIsOver(tyresWidget) && (cursor.lockedTo == Cursor::LockedTo::Tyres || cursor.lockedTo == Cursor::LockedTo::None))
 		{
 			cursor.lockedTo = Cursor::LockedTo::Tyres;
 			tyresWidget.UpdatePosition();
 		}
-		else if (MouseIsOver(engineWidget) && (cursor.lockedTo == Cursor::LockedTo::Engine || cursor.lockedTo == Cursor::LockedTo::None))
+		else if (engineWidget.enabled && MouseIsOver(engineWidget) && (cursor.lockedTo == Cursor::LockedTo::Engine || cursor.lockedTo == Cursor::LockedTo::None))
 		{
 			cursor.lockedTo = Cursor::LockedTo::Engine;
 			engineWidget.UpdatePosition();
 		}
-		else if (MouseIsOver(rainWidget) && (cursor.lockedTo == Cursor::LockedTo::Rain || cursor.lockedTo == Cursor::LockedTo::None))
+		else if (rainWidget.enabled && MouseIsOver(rainWidget) && (cursor.lockedTo == Cursor::LockedTo::Rain || cursor.lockedTo == Cursor::LockedTo::None))
 		{
 			cursor.lockedTo = Cursor::LockedTo::Rain;
 			rainWidget.UpdatePosition();
 		}
-		else if (MouseIsOver(inputsWidget) && (cursor.lockedTo == Cursor::LockedTo::Inputs || cursor.lockedTo == Cursor::LockedTo::None))
+		else if (inputsWidget.enabled && MouseIsOver(inputsWidget) && (cursor.lockedTo == Cursor::LockedTo::Inputs || cursor.lockedTo == Cursor::LockedTo::None))
 		{
 			cursor.lockedTo = Cursor::LockedTo::Inputs;
 			inputsWidget.UpdatePosition();
 		}
-		else if (MouseIsOver(fpsWidget) && (cursor.lockedTo == Cursor::LockedTo::FPSMeter || cursor.lockedTo == Cursor::LockedTo::None))
+		else if (fpsWidget.enabled && MouseIsOver(fpsWidget) && (cursor.lockedTo == Cursor::LockedTo::FPSMeter || cursor.lockedTo == Cursor::LockedTo::None))
 		{
 			cursor.lockedTo = Cursor::LockedTo::FPSMeter;
 			fpsWidget.UpdatePosition();
 		}
-		else if (MouseIsOver(lightsWidget) && (cursor.lockedTo == Cursor::LockedTo::StartingLights || cursor.lockedTo == Cursor::LockedTo::None))
+		else if (lightsWidget.enabled && MouseIsOver(lightsWidget) && (cursor.lockedTo == Cursor::LockedTo::StartingLights || cursor.lockedTo == Cursor::LockedTo::None))
 		{
 			cursor.lockedTo = Cursor::LockedTo::StartingLights;
 			lightsWidget.UpdatePosition();
 		}
-		else if (MouseIsOver(gearWidget) && (cursor.lockedTo == Cursor::LockedTo::Gear || cursor.lockedTo == Cursor::LockedTo::None))
+		else if (gearWidget.enabled && MouseIsOver(gearWidget) && (cursor.lockedTo == Cursor::LockedTo::Gear || cursor.lockedTo == Cursor::LockedTo::None))
 		{
 			cursor.lockedTo = Cursor::LockedTo::Gear;
 			gearWidget.UpdatePosition();
 		}
-		else if (MouseIsOver(gridWidget) && (cursor.lockedTo == Cursor::LockedTo::Grid || cursor.lockedTo == Cursor::LockedTo::None))
+		else if (gridWidget.enabled && MouseIsOver(gridWidget) && (cursor.lockedTo == Cursor::LockedTo::Grid || cursor.lockedTo == Cursor::LockedTo::None))
 		{
 			cursor.lockedTo = Cursor::LockedTo::Grid;
 			gridWidget.UpdatePosition();
 		}
-		else if (MouseIsOver(brakesWidget) && (cursor.lockedTo == Cursor::LockedTo::Brakes || cursor.lockedTo == Cursor::LockedTo::None))
+		else if (brakesWidget.enabled && MouseIsOver(brakesWidget) && (cursor.lockedTo == Cursor::LockedTo::Brakes || cursor.lockedTo == Cursor::LockedTo::None))
 		{
 			cursor.lockedTo = Cursor::LockedTo::Brakes;
 			brakesWidget.UpdatePosition();
