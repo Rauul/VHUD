@@ -83,7 +83,7 @@ void Grid::Update(const ScoringInfoV01 & info)
 	{
 		VehicleScoringInfoV01 &vinfo = info.mVehicle[l];
 
-		Driver driver(vinfo.mDriverName, vinfo.mVehicleClass, vinfo.mTotalLaps, vinfo.mLapDist, info.mLapDist, vinfo.mTimeIntoLap, vinfo.mEstimatedLapTime, vinfo.mInPits, vinfo.mIsPlayer, vinfo.mPlace, vinfo.mInGarageStall);
+		Driver driver(vinfo.mDriverName, vinfo.mVehicleClass, vinfo.mTotalLaps, vinfo.mLapDist, info.mLapDist, vinfo.mBestLapTime, vinfo.mLastLapTime, vinfo.mTimeIntoLap, vinfo.mEstimatedLapTime, vinfo.mInPits, vinfo.mIsPlayer, vinfo.mPlace, vinfo.mInGarageStall);
 		if (vinfo.mIsPlayer)
 		{
 			playerSlot = (int)drivers.size();
@@ -272,12 +272,12 @@ void Grid::DrawTxt()
 
 	namePosition.left = placeInClassPosition.left + 26;
 	namePosition.top = placePosition.top;
-	namePosition.right = namePosition.left + 220;
+	namePosition.right = namePosition.left + 200;
 	namePosition.bottom = namePosition.top + 20;
 
-	timePosition.left = namePosition.left + 220;
+	timePosition.left = namePosition.right;
 	timePosition.top = placePosition.top;
-	timePosition.right = timePosition.left + 47;
+	timePosition.right = timePosition.left + 67;
 	timePosition.bottom = timePosition.top + 20;
 
 	timerPosition.left = placePosition.left;
@@ -347,29 +347,58 @@ void Grid::DrawTxt()
 
 		smallFont->DrawText(NULL, drivers[gridStartNum + i].driverName, -1, &namePosition, DT_LEFT, color);
 
-		if (isPlayer)
-			sprintf(c_buffer, "%s", "0.0");
-		else
-			sprintf(c_buffer, "%.1f", drivers[gridStartNum + i].relativeTime * -1);
-		smallFont->DrawText(NULL, c_buffer, -1, &timePosition, DT_RIGHT, color);
+		if (drivers[gridStartNum + i].timeIntoLap < 10 && drivers[gridStartNum + i].lastLapTime > 0)
+		{		
+			D3DCOLOR flashColor = 0xFFFFFFFF;
+			int totalms, minutes, seconds, ms;
+			totalms = floor(((drivers[gridStartNum + i].lastLapTime * 10000) + 5) / 10);
+			minutes = totalms / (60 * 1000);
+			totalms = totalms - minutes*(60 * 1000);
+			seconds = totalms / 1000;
+			ms = totalms - seconds * 1000;
 
-		//// Adjust for next itteration
-		placePosition.top += 23;
-		placePosition.bottom += 23;
+			if (drivers[gridStartNum + i].lastLapTime == drivers[gridStartNum + i].bestLapTime)
+			{
+				flashColor = D3DCOLOR_ARGB
+				(
+					255,
+					(int)(255 * drivers[gridStartNum + i].timeIntoLap / 10),
+					255,
+					(int)(255 * drivers[gridStartNum + i].timeIntoLap / 10)
+				);
+			}
 
-		classBoxRect.top = placePosition.top;
-		classBoxRect.bottom = classBoxRect.top + 19;
-		classBoxPos.x = classBoxRect.left;
-		classBoxPos.y = classBoxRect.top;
+			sprintf(c_buffer, "%d:%02d.%03d", minutes, seconds, ms);
+			smallFont->DrawText(NULL, c_buffer, -1, &timePosition, DT_RIGHT | DT_VCENTER, flashColor);
+		}
 
-		placeInClassPosition.top = placePosition.top;
-		placeInClassPosition.bottom = placeInClassPosition.top + 23;
+		else 
+		{
 
-		namePosition.top = placePosition.top;
-		namePosition.bottom = namePosition.top + 23;
+			if (isPlayer)
+				sprintf(c_buffer, "%s", "0.0");
+			else
+				sprintf(c_buffer, "%.1f", drivers[gridStartNum + i].relativeTime * -1);
+			smallFont->DrawText(NULL, c_buffer, -1, &timePosition, DT_RIGHT, color);
+		}
 
-		timePosition.top = placePosition.top;
-		timePosition.bottom = timePosition.top + 23;
+			//// Adjust for next itteration
+			placePosition.top += 23;
+			placePosition.bottom += 23;
+
+			classBoxRect.top = placePosition.top;
+			classBoxRect.bottom = classBoxRect.top + 19;
+			classBoxPos.x = classBoxRect.left;
+			classBoxPos.y = classBoxRect.top;
+
+			placeInClassPosition.top = placePosition.top;
+			placeInClassPosition.bottom = placeInClassPosition.top + 23;
+
+			namePosition.top = placePosition.top;
+			namePosition.bottom = namePosition.top + 23;
+
+			timePosition.top = placePosition.top;
+			timePosition.bottom = timePosition.top + 23;
 	}
 
 	char c_buffer[32] = "";
@@ -377,7 +406,7 @@ void Grid::DrawTxt()
 	if (isTimedSession)
 	{
 		sprintf(c_buffer, "Lap:  %d", laps);
-		smallFont->DrawText(NULL, c_buffer, -1, &timerPosition, DT_LEFT | DT_VCENTER, 0xFFFFFFFF);
+		smallFont->DrawText(NULL, c_buffer, -1, &timerPosition, DT_LEFT | DT_VCENTER, SecondaryTextColor);
 
 		int total, hours, minutes, seconds;
 		total = endTime - currentTime;
@@ -387,29 +416,29 @@ void Grid::DrawTxt()
 		minutes = minutes % 60;
 
 		sprintf(c_buffer, "%2d:%02d:%02d", hours, minutes, seconds);
-		smallFont->DrawText(NULL, c_buffer, -1, &timerPosition, DT_RIGHT | DT_VCENTER, 0xFFFFFFFF);
+		smallFont->DrawText(NULL, c_buffer, -1, &timerPosition, DT_RIGHT | DT_VCENTER, SecondaryTextColor);
 	}
 	else
 	{
 		sprintf(c_buffer, "Lap:  %d / %d", laps, maxLaps);
-		smallFont->DrawText(NULL, c_buffer, -1, &timerPosition, DT_LEFT | DT_VCENTER, 0xFFFFFFFF);
+		smallFont->DrawText(NULL, c_buffer, -1, &timerPosition, DT_LEFT | DT_VCENTER, SecondaryTextColor);
 
 		int total, hours, minutes, seconds;
 		total = currentTime;
-		minutes = total / 60;
-		seconds = total % 60;
-		hours = minutes / 60;
-		minutes = minutes % 60;
+		minutes = abs(total / 60);
+		seconds = abs(total % 60);
+		hours = abs(minutes / 60);
+		minutes = abs(minutes % 60);
 
 		sprintf(c_buffer, "%2d:%02d:%02d", hours, minutes, seconds);
-		smallFont->DrawText(NULL, c_buffer, -1, &timerPosition, DT_RIGHT | DT_VCENTER, 0xFFFFFFFF);
+		smallFont->DrawText(NULL, c_buffer, -1, &timerPosition, DT_RIGHT | DT_VCENTER, SecondaryTextColor);
 	}
 
 	time_t t = time(0);
 	struct tm *now = localtime(&t);
 
 	sprintf(c_buffer, "%02d:%02d", now->tm_hour, now->tm_min);
-	smallFont->DrawText(NULL, c_buffer, -1, &timerPosition, DT_CENTER | DT_VCENTER, 0xFFFFFFFF);
+	smallFont->DrawText(NULL, c_buffer, -1, &timerPosition, DT_CENTER | DT_VCENTER, SecondaryTextColor);
 }
 
 double Grid::GetRelativeTimeToPlayer(Driver other, int playerSlot)
@@ -435,7 +464,7 @@ D3DCOLOR Grid::TextColor(int other, int player)
 {
 	bool isPlayer = drivers[other].isPlayer;
 
-	// if it's us, we want player color
+	// if it's us, we want player SecondaryTextColor
 	if (isPlayer)
 	{
 		if (drivers[other].inPits)
@@ -445,7 +474,7 @@ D3DCOLOR Grid::TextColor(int other, int player)
 
 	if (session > 9)
 	{
-		// if a faster car is >.5 lap ahead of us, we want faster car color
+		// if a faster car is >.5 lap ahead of us, we want faster car SecondaryTextColor
 		if ((drivers[other].place < drivers[player].place && drivers[other].relativeTime > 0) ||
 			(drivers[other].place < drivers[player].place && drivers[other].totalLapDistance > drivers[player].totalLapDistance + 1))
 		{
@@ -454,7 +483,7 @@ D3DCOLOR Grid::TextColor(int other, int player)
 			return FasterCarOnTrackColor;
 		}
 
-		// else if a slower car is >.5 lap behind us, we want slower car color
+		// else if a slower car is >.5 lap behind us, we want slower car SecondaryTextColor
 		else if ((drivers[other].place > drivers[player].place && drivers[other].relativeTime < 0) ||
 			(drivers[other].place > drivers[player].place && drivers[other].totalLapDistance < drivers[player].totalLapDistance - 1))
 		{
@@ -463,7 +492,7 @@ D3DCOLOR Grid::TextColor(int other, int player)
 			return SlowerCarOnTrackColor;
 		}
 
-		// else we fight for position and want equal car color
+		// else we fight for position and want equal car SecondaryTextColor
 		else
 		{
 			if (drivers[other].inPits)
