@@ -21,7 +21,7 @@
 #include <Windows.h>
 
 #define PLUGIN_NAME					"V-HUD"
-#define PLUGIN_VERSION				"0.84b3"
+#define PLUGIN_VERSION				"0.84b4"
 
 #if _WIN64
 #define CONFIG_FILE					"Bin64\\Plugins\\VHUD\\VHUD.ini"

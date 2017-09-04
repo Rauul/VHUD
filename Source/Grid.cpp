@@ -410,6 +410,7 @@ void Grid::DrawTxt()
 
 		int total, hours, minutes, seconds;
 		total = endTime - currentTime;
+		if (total < 0) total = 0;
 		minutes = total / 60;
 		seconds = total % 60;
 		hours = minutes / 60;
@@ -425,10 +426,11 @@ void Grid::DrawTxt()
 
 		int total, hours, minutes, seconds;
 		total = currentTime;
-		minutes = abs(total / 60);
-		seconds = abs(total % 60);
-		hours = abs(minutes / 60);
-		minutes = abs(minutes % 60);
+		if (total < 0) total = 0;
+		minutes = total / 60;
+		seconds = total % 60;
+		hours = minutes / 60;
+		minutes = minutes % 60;
 
 		sprintf(c_buffer, "%2d:%02d:%02d", hours, minutes, seconds);
 		smallFont->DrawText(NULL, c_buffer, -1, &timerPosition, DT_RIGHT | DT_VCENTER, SecondaryTextColor);
