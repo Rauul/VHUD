@@ -18,7 +18,7 @@ public:
 	double lapDistance;
 	double totalLapDistance;		// totalLaps + lapDistance
 	double lastLapTime;
-	double bestLapTime;
+	double bestLapTimePersonal;
 	double relativeDistance;		// Relative distance to the player
 	double timeIntoLap;
 	double estimatedLapTime;

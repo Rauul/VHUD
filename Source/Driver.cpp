@@ -20,7 +20,7 @@ Driver::Driver(char pDriverName[32], char pVehicleClass[32], short pTotalLaps, d
 	lapDistance = pLapDistance;
 	totalLapDistance = pTotalLaps + (pLapDistance / pFullLapDistance);
 	lastLapTime = pLastLapTime;
-	bestLapTime = pBestLapTime;
+	bestLapTimePersonal = pBestLapTime;
 	timeIntoLap = pTimeIntoLap;
 	estimatedLapTime = pEstimatedLapTime;
 	inPits = pInPits;

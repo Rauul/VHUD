@@ -57,6 +57,7 @@ public:
 	int nDriversToShow = 3;
 	double currentTime = 0;
 	double endTime = 0;
+	double bestLapTimeSession = 0;
 	short laps = 0;
 	long maxLaps = 0;
 	long session = 0;

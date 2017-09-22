@@ -175,6 +175,13 @@ void Grid::Update(const ScoringInfoV01 & info)
 		}
 	}
 
+	for (int i = 0; i < (int)drivers.size(); i++)
+	{
+		if (bestLapTimeSession <= 0 || 
+			(drivers[i].bestLapTimePersonal > 0 && drivers[i].bestLapTimePersonal < bestLapTimeSession))
+			bestLapTimeSession = drivers[i].bestLapTimePersonal;
+	}
+
 	if (filterVehiclesInGarage)
 	{
 		for (int i = 0; i < (int)drivers.size(); i++)
@@ -188,6 +195,7 @@ void Grid::Update(const ScoringInfoV01 & info)
 	}
 
 	sort(drivers.begin(), drivers.end(), [](const Driver& lhs, const Driver& rhs) { return lhs.relativeTime < rhs.relativeTime; });
+	
 }
 
 void Grid::UpdatePosition()
@@ -357,7 +365,7 @@ void Grid::DrawTxt()
 			seconds = totalms / 1000;
 			ms = totalms - seconds * 1000;
 
-			if (drivers[gridStartNum + i].lastLapTime == drivers[gridStartNum + i].bestLapTime)
+			if (drivers[gridStartNum + i].lastLapTime == drivers[gridStartNum + i].bestLapTimePersonal)
 			{
 				flashColor = D3DCOLOR_ARGB
 				(
@@ -365,6 +373,17 @@ void Grid::DrawTxt()
 					(int)(255 * drivers[gridStartNum + i].timeIntoLap / 10),
 					255,
 					(int)(255 * drivers[gridStartNum + i].timeIntoLap / 10)
+				);
+			}
+
+			if (drivers[gridStartNum + i].lastLapTime == bestLapTimeSession)
+			{
+				flashColor = D3DCOLOR_ARGB
+				(
+					255,
+					255,
+					(int)(255 * drivers[gridStartNum + i].timeIntoLap / 10),
+					255
 				);
 			}
 
@@ -510,6 +529,7 @@ D3DCOLOR Grid::TextColor(int other, int player)
 			return EqualCarOnTrackColor;
 		}
 	}
+
 	// if not in race we want white
 	else
 	{
