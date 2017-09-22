@@ -466,7 +466,7 @@ D3DCOLOR Grid::TextColor(int other, int player)
 {
 	bool isPlayer = drivers[other].isPlayer;
 
-	// if it's us, we want player SecondaryTextColor
+	// if it's us, we want player text colors
 	if (isPlayer)
 	{
 		if (drivers[other].inPits)
@@ -476,7 +476,15 @@ D3DCOLOR Grid::TextColor(int other, int player)
 
 	if (session > 9)
 	{
-		// if a faster car is >.5 lap ahead of us, we want faster car SecondaryTextColor
+		// somthings up at the start of a race so lock to equal car colors
+		if (drivers[player].totalLaps < 1)
+		{
+			if (drivers[other].inPits)
+				return EqualCarInPitsColor;
+			return EqualCarOnTrackColor;
+		}
+
+		// if a faster car is >.5 lap ahead of us, we want faster car colors
 		if ((drivers[other].place < drivers[player].place && drivers[other].relativeTime > 0) ||
 			(drivers[other].place < drivers[player].place && drivers[other].totalLapDistance > drivers[player].totalLapDistance + 1))
 		{
@@ -485,7 +493,7 @@ D3DCOLOR Grid::TextColor(int other, int player)
 			return FasterCarOnTrackColor;
 		}
 
-		// else if a slower car is >.5 lap behind us, we want slower car SecondaryTextColor
+		// else if a slower car is >.5 lap behind us, we want slower car colors
 		else if ((drivers[other].place > drivers[player].place && drivers[other].relativeTime < 0) ||
 			(drivers[other].place > drivers[player].place && drivers[other].totalLapDistance < drivers[player].totalLapDistance - 1))
 		{
@@ -494,7 +502,7 @@ D3DCOLOR Grid::TextColor(int other, int player)
 			return SlowerCarOnTrackColor;
 		}
 
-		// else we fight for position and want equal car SecondaryTextColor
+		// else we fight for position and want equal car colors
 		else
 		{
 			if (drivers[other].inPits)
