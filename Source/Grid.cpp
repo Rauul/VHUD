@@ -366,26 +366,10 @@ void Grid::DrawTxt()
 			ms = totalms - seconds * 1000;
 
 			if (drivers[gridStartNum + i].lastLapTime == drivers[gridStartNum + i].bestLapTimePersonal)
-			{
-				flashColor = D3DCOLOR_ARGB
-				(
-					255,
-					(int)(255 * drivers[gridStartNum + i].timeIntoLap / 10),
-					255,
-					(int)(255 * drivers[gridStartNum + i].timeIntoLap / 10)
-				);
-			}
+				flashColor = D3DCOLOR_ARGB(255, 0, 255, 0);
 
 			if (drivers[gridStartNum + i].lastLapTime == bestLapTimeSession)
-			{
-				flashColor = D3DCOLOR_ARGB
-				(
-					255,
-					255,
-					(int)(255 * drivers[gridStartNum + i].timeIntoLap / 10),
-					255
-				);
-			}
+				flashColor = D3DCOLOR_ARGB(255, 255, 0, 255);
 
 			sprintf(c_buffer, "%d:%02d.%03d", minutes, seconds, ms);
 			smallFont->DrawText(NULL, c_buffer, -1, &timePosition, DT_RIGHT | DT_VCENTER, flashColor);
@@ -395,7 +379,21 @@ void Grid::DrawTxt()
 		{
 
 			if (isPlayer)
-				sprintf(c_buffer, "%s", "0.0");
+			{
+				if (drivers[playerSlot].lastLapTime > 0)
+				{
+					//sprintf(c_buffer, "%s", "0.0");
+					int totalms, minutes, seconds, ms;
+					totalms = floor(((drivers[playerSlot].lastLapTime * 10000) + 5) / 10);
+					minutes = totalms / (60 * 1000);
+					totalms = totalms - minutes*(60 * 1000);
+					seconds = totalms / 1000;
+					ms = totalms - seconds * 1000;
+					sprintf(c_buffer, "%d:%02d.%03d", minutes, seconds, ms);
+				}
+				else
+					sprintf(c_buffer, "%s", "-:--.---");
+			}
 			else
 				sprintf(c_buffer, "%.1f", drivers[gridStartNum + i].relativeTime * -1);
 			smallFont->DrawText(NULL, c_buffer, -1, &timePosition, DT_RIGHT, color);
