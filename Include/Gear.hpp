@@ -38,6 +38,7 @@ public:
 	char gear[4] = "-";
 	char speedKPH[8] = "0";
 	bool shiftLight = false;
+	bool speedLimiter = false;
 	bool useBorder = true;
 	bool enabled = true;
 };

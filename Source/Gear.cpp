@@ -59,6 +59,8 @@ void Gear::Update(const TelemInfoV01 & info)
 {
 	shiftLight = info.mEngineRPM > info.mEngineMaxRPM * 0.97;
 
+	speedLimiter = info.mSpeedLimiter;
+
 	if (info.mGear == -1)
 		sprintf(gear, "%c", 'R');
 
@@ -142,6 +144,8 @@ void Gear::DrawTxt()
 
 	if (shiftLight)
 		color = 0xFFFF0000;
+	if (speedLimiter)
+		color = 0xFF00d8ff;
 
 	gearFont->DrawText(NULL, gear, -1, &pos, DT_CENTER | DT_VCENTER, color);
 

@@ -77,6 +77,8 @@ void Rain::Update(const ScoringInfoV01& info)
 	trackTemp = info.mTrackTemp;
 	ambientTemp = info.mAmbientTemp;
 
+	rainPtc == 0 ? iconColor = 0xFFFFFFFF : iconColor = 0xFF00d8ff;
+
 	if (mode == 3 && startTime + interval < GetTickCount())
 	{
 		showWetness = !showWetness;
@@ -149,10 +151,9 @@ void Rain::DrawBox(bool inEditMode)
 void Rain::DrawIcon()
 {
 	RECT size = { 0, 0, 64, 64 };
-	D3DCOLOR color = 0xFFFFFFFF;
 
 	iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
-	iconSprite->Draw(iconTexture, &size, NULL, &position, color);
+	iconSprite->Draw(iconTexture, &size, NULL, &position, iconColor);
 	iconSprite->End();
 }
 
