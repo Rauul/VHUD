@@ -22,6 +22,7 @@ public:
 	void Draw(bool inEditMode);
 	void DrawBox(bool inEditMode);
 	void DrawTxt();
+	long RoundNum(long num, long multiple);
 
 	RECT size = { 0, 0, 64, 65 };
 	D3DXVECTOR3 position = { 0, 950, 0 };

@@ -29,6 +29,7 @@ public:
 	void Draw(bool inEditMode);
 	void DrawBox(bool inEditMode);
 	void DrawTxt();
+	long RoundNum(long num, long multiple);
 	double GetRelativeTimeToPlayer(Driver other, int playerSlot);
 	int TopGridPlace(int playerSlot);
 	D3DCOLOR TextColor(int other, int player);

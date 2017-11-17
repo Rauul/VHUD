@@ -2,17 +2,21 @@
 #include "VHUD.hpp"
 #include <stdio.h>
 
-void Gear::Init(const ScreenInfoV01 & info)
+void Gear::Init(const ScreenInfoV01 & info, float gScaleFactor)
 {
+	scaleFactor = gScaleFactor;
 	GetPrivateProfileString("Config", "Font", "Tahoma", smallFontDesc.FaceName, 32, CONFIG_FILE);
-	smallFontDesc.Height = GetPrivateProfileInt("Config", "SmallFontSize", 20, CONFIG_FILE);
+	smallFontDesc.Height = GetPrivateProfileInt("Config", "SmallFontSize", 20, CONFIG_FILE) * scaleFactor;
 	GetPrivateProfileString("Config", "Font", "Tahoma", gearFontDesc.FaceName, 32, CONFIG_FILE);
-	gearFontDesc.Height = GetPrivateProfileInt("Config", "GearFontSize", 60, CONFIG_FILE);
+	gearFontDesc.Height = GetPrivateProfileInt("Config", "GearFontSize", 60, CONFIG_FILE) * scaleFactor;
 
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &boxSprite);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, BACKGROUND_TEXTURE, &boxTexture);
 	D3DXCreateFontIndirect((LPDIRECT3DDEVICE9)info.mDevice, &gearFontDesc, &gearFont);
 	D3DXCreateFontIndirect((LPDIRECT3DDEVICE9)info.mDevice, &smallFontDesc, &smallFont);
+
+	size.right *= scaleFactor;
+	size.bottom *= scaleFactor;
 }
 
 void Gear::Uninit(const ScreenInfoV01 & info)
@@ -80,9 +84,29 @@ void Gear::UpdatePosition()
 	POINT cursorPosition;
 	if (GetCursorPos(&cursorPosition))
 	{
-		position.x = cursorPosition.x - size.right / 2;
-		position.y = cursorPosition.y - size.bottom / 2;
+		if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
+		{
+			position.x = cursorPosition.x - size.right / 2;
+			position.y = cursorPosition.y - size.bottom / 2;
+		}
+
+		else if (GetAsyncKeyState(VK_MENU) & 0x8000)
+		{
+			position.x = RoundNum(cursorPosition.x, 10) - size.right / 2;
+			position.y = RoundNum(cursorPosition.y, 10) - size.bottom / 2;
+		}
+		else
+		{
+			position.x = RoundNum(cursorPosition.x, 5) - size.right / 2;
+			position.y = RoundNum(cursorPosition.y, 5) - size.bottom / 2;
+		}
 	}
+}
+
+long Gear::RoundNum(long num, long multiple)
+{
+	long rem = num % multiple;
+	return rem >= 5 ? (num - rem + 10) : (num - rem);
 }
 
 void Gear::Draw(bool inEditMode)
@@ -139,8 +163,8 @@ void Gear::DrawTxt()
 	RECT pos;
 	pos.left = position.x;
 	pos.top = position.y;
-	pos.right = pos.left + 64;
-	pos.bottom = pos.top + 45;
+	pos.right = pos.left + 64 * scaleFactor;
+	pos.bottom = pos.top + 45 * scaleFactor;
 
 	if (shiftLight)
 		color = 0xFFFF0000;
@@ -150,8 +174,8 @@ void Gear::DrawTxt()
 	gearFont->DrawText(NULL, gear, -1, &pos, DT_CENTER | DT_VCENTER, color);
 
 	color = 0xFFFFFFFF;
-	pos.top += 45;
-	pos.bottom += 17;
+	pos.top += 45 * scaleFactor;
+	pos.bottom += 17 * scaleFactor;
 
 	smallFont->DrawText(NULL, speedKPH, -1, &pos, DT_CENTER | DT_VCENTER, color);
 }

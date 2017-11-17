@@ -27,6 +27,7 @@ public:
 	void DrawBackground();
 	void DrawBars();
 	void DrawForeground();
+	long RoundNum(long num, long multiple);
 
 	RECT size = { 0, 0, 64, 65 };
 	D3DXVECTOR3 position = { 0, 880, 0 };

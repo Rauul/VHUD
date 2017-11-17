@@ -153,9 +153,9 @@ void VHUD::InitScreen(const ScreenInfoV01& info)
 	screenCenter = info.mWidth / 2;
 	screenHeight = info.mHeight;
 
-	scaleFactor = (float)info.mHeight / 1080.0f;
+	gScaleFactor = (float)info.mHeight / 1080.0f;
 	
-	//D3DXMatrixTranslation(&mat, (1.0f / scaleFactor) * 0.5f, 1.0f / scaleFactor * 0.5f, 0.0f);
+	//D3DXMatrixTranslation(&mat, (1.0f / gScaleFactor) * 0.5f, 1.0f / gScaleFactor * 0.5f, 0.0f);
 
 	D3DXCreateSprite((LPDIRECT3DDEVICE9)info.mDevice, &splashSprite);
 	D3DXCreateTextureFromFile((LPDIRECT3DDEVICE9)info.mDevice, SPLASH_TEXTURE, &splashTexture);
@@ -174,7 +174,7 @@ void VHUD::InitScreen(const ScreenInfoV01& info)
 	inputsWidget.Init(info);
 	fpsWidget.Init(info);
 	lightsWidget.Init(info);
-	gearWidget.Init(info);
+	gearWidget.Init(info, gScaleFactor);
 	gridWidget.Init(info);
 	brakesWidget.Init(info);
 }
@@ -703,12 +703,12 @@ void VHUD::DrawSplashScreen()
 	{
 		RECT size = { 0, 0, 512, 256 };
 		D3DXVECTOR3 position = { 0, 0, 0 };
-		position.x = screenCenter - 256 * scaleFactor;
-		position.y = screenHeight / 2 - 128 * scaleFactor;
+		position.x = screenCenter - 256 * gScaleFactor;
+		position.y = screenHeight / 2 - 128 * gScaleFactor;
 
-		D3DXVECTOR3 spriteCenter = { screenCenter - 256 * scaleFactor, screenHeight / 2 - 128 * scaleFactor,0 };
+		D3DXVECTOR3 spriteCenter = { screenCenter - 256 * gScaleFactor, screenHeight / 2 - 128 * gScaleFactor,0 };
 		D3DXMATRIX mat;
-		D3DXVECTOR3 scaling(scaleFactor, scaleFactor, 0);
+		D3DXVECTOR3 scaling(gScaleFactor, gScaleFactor, 0);
 		D3DXMatrixTransformation(&mat, &spriteCenter, NULL, &scaling, NULL, NULL, NULL);
 		splashSprite->SetTransform(&mat);
 
@@ -730,6 +730,7 @@ void VHUD::LoadConfig(const char * ini_file)
 	fuelWidget.borderColor = tyresWidget.borderColor = engineWidget.borderColor = rainWidget.borderColor = inputsWidget.borderColor = fpsWidget.borderColor = gearWidget.borderColor = 
 		gridWidget.borderColor = brakesWidget.borderColor =
 		GetPrivateProfileInt("Config", "BorderColor", BORDER_COLOR, ini_file);
+	gScaleFactor = (float)GetPrivateProfileInt("Config", "ScalePct", gScaleFactor * 100, ini_file) / 100;
 
 
 	// [Controls]

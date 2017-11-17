@@ -93,9 +93,29 @@ void Inputs::UpdatePosition()
 	POINT cursorPosition;
 	if (GetCursorPos(&cursorPosition))
 	{
-		position.x = cursorPosition.x - size.right / 2;
-		position.y = cursorPosition.y - size.bottom / 2;
+		if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
+		{
+			position.x = cursorPosition.x - size.right / 2;
+			position.y = cursorPosition.y - size.bottom / 2;
+		}
+
+		else if (GetAsyncKeyState(VK_MENU) & 0x8000)
+		{
+			position.x = RoundNum(cursorPosition.x, 10) - size.right / 2;
+			position.y = RoundNum(cursorPosition.y, 10) - size.bottom / 2;
+		}
+		else
+		{
+			position.x = RoundNum(cursorPosition.x, 5) - size.right / 2;
+			position.y = RoundNum(cursorPosition.y, 5) - size.bottom / 2;
+		}
 	}
+}
+
+long Inputs::RoundNum(long num, long multiple)
+{
+	long rem = num % multiple;
+	return rem >= 5 ? (num - rem + 10) : (num - rem);
 }
 
 void Inputs::Draw(bool inEditMode)

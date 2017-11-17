@@ -15,7 +15,7 @@
 class Gear
 {
 public:
-	void Init(const ScreenInfoV01& info);
+	void Init(const ScreenInfoV01& info, float gScaleFactor);
 	void Uninit(const ScreenInfoV01& info);
 	void PreReset(const ScreenInfoV01& info);
 	void PostReset(const ScreenInfoV01& info);
@@ -24,7 +24,9 @@ public:
 	void Draw(bool inEditMode);
 	void DrawBox(bool inEditMode);
 	void DrawTxt();
+	long RoundNum(long num, long multiple);
 
+	float scaleFactor = 0;
 	RECT size = { 0, 0, 64, 65 };
 	D3DXVECTOR3 position = { 0, 950, 0 };
 	D3DCOLOR backgroundColor = 0xFF000000;

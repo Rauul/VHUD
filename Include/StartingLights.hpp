@@ -31,6 +31,7 @@ public:
 	void UpdatePosition();
 	void Draw(bool inEditMode);
 	void DrawLights(bool inEditMode);
+	long RoundNum(long num, long multiple);
 
 	RECT size = { 0, 0, 400, 90 };
 	D3DXVECTOR3 position = { 0, 1020, 0 };
