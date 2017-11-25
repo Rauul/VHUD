@@ -57,6 +57,7 @@ public:
 	int timeQuantityTotal = 0;
 	int timeQuantityMinutes = 0;
 	int timeQuantitySeconds = 0;
+	int fullTanksNeeded = 0;
 	bool firstUpdate = true;
 	bool useBorder = true;
 	bool enabled = true;

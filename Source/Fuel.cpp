@@ -194,15 +194,21 @@ void Fuel::Update(const ScoringInfoV01 & info)
 		double avgFuelConsumption = total / laps;
 
 		if (info.mMaxLaps > 999999)
-			fuelNeededToFinish = (avgFuelConsumption / info.mVehicle[playerSlot].mBestLapTime * (info.mEndET - info.mCurrentET)) - quantity;
+			fuelNeededToFinish = (avgFuelConsumption / info.mVehicle[playerSlot].mBestLapTime * (info.mEndET - info.mCurrentET)) - quantity + avgFuelConsumption;
 		else
 			fuelNeededToFinish = (info.mMaxLaps - (info.mVehicle[playerSlot].mTotalLaps + (info.mVehicle[playerSlot].mLapDist / info.mLapDist))) * avgFuelConsumption - quantity;
+
+		fullTanksNeeded = fuelNeededToFinish / fuelCapacity;
+		fuelNeededToFinish = fmod(fuelNeededToFinish, fuelCapacity);
 	}
 
-	if (fuelNeededToFinish < 0)
-		fuelNeededToFinish = 0;
-	if (fuelNeededToFinish > fuelCapacity)
-		fuelNeededToFinish = fuelCapacity;
+	/*if (showFullTanks)
+	{
+		if (fuelNeededToFinish < 0)
+			fuelNeededToFinish = 0;
+		if (fuelNeededToFinish > fuelCapacity)
+			fuelNeededToFinish = fuelCapacity;
+	}*/
 }
 
 void Fuel::UpdatePosition()
@@ -325,6 +331,9 @@ void Fuel::DrawTxt()
 	pos.top += 40;
 	pos.bottom = pos.top + 24;
 
-	sprintf(text, "%.2f | %.1f | %02d:%02d | %.0f", usedPerLap[0], lapQuantity, timeQuantityMinutes, timeQuantitySeconds, fuelNeededToFinish);
+	if(fullTanksNeeded > 0)
+		sprintf(text, "%.2f | %.1f | %02d:%02d | (%d)%.0f", usedPerLap[0], lapQuantity, timeQuantityMinutes, timeQuantitySeconds, fullTanksNeeded, fuelNeededToFinish);
+	else
+		sprintf(text, "%.2f | %.1f | %02d:%02d | %.0f", usedPerLap[0], lapQuantity, timeQuantityMinutes, timeQuantitySeconds, fuelNeededToFinish);
 	smallFont->DrawText(NULL, text, -1, &pos, DT_CENTER, color);
 }
