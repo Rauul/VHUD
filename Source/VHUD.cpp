@@ -750,14 +750,19 @@ void VHUD::LoadConfig(const char * ini_file)
 	tyresWidget.position.y = GetPrivateProfileInt("Tyres", "PosY", tyresWidget.position.y, ini_file);
 	tyresWidget.mode = GetPrivateProfileInt("Tyres", "Mode", 1, ini_file);
 	tyresWidget.interval = GetPrivateProfileInt("Tyres", "Interval", 3000, ini_file);
-	tyresWidget.threshold = GetPrivateProfileInt("Tyres", "Threshold", 125, ini_file);
+	tyresWidget.threshold = GetPrivateProfileInt("Tyres", "Threshold", 255, ini_file);
+	tyresWidget.useHeatMap = GetPrivateProfileInt("Tyres", "UseHeatMap", true, ini_file);
+	tyresWidget.heatMapMin = GetPrivateProfileInt("Tyres", "HeatMapMin", 30, ini_file);
+	tyresWidget.heatMapMax = GetPrivateProfileInt("Tyres", "HeatMapMax", 300, ini_file);
 
 
 	// [Brakes]
 	brakesWidget.enabled = GetPrivateProfileInt("Brakes", "Enabled", true, ini_file);
 	brakesWidget.position.x = (int)GetPrivateProfileInt("Brakes", "PosX", 0, ini_file) + screenCenter;
 	brakesWidget.position.y = GetPrivateProfileInt("Brakes", "PosY", brakesWidget.position.y, ini_file);
-	brakesWidget.threshold = GetPrivateProfileInt("Brakes", "Threshold", 1000, ini_file);
+	brakesWidget.useHeatMap = GetPrivateProfileInt("Brakes", "UseHeatMap", true, ini_file);
+	brakesWidget.heatMapMin = GetPrivateProfileInt("Brakes", "HeatMapMin", 0, ini_file);
+	brakesWidget.heatMapMax = GetPrivateProfileInt("Brakes", "HeatMapMax", 1000, ini_file);
 
 
 	// [Engine]

@@ -148,13 +148,52 @@ void Brakes::DrawBox(bool inEditMode)
 	}
 }
 
+
+void Brakes::getHeatMapColor(float *red, float *green, float *blue)
+{
+	double temperatures[4] = { tempFL, tempFR, tempRL, tempRR };
+	double temp = 0;
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (temperatures[i] > temp)
+			temp = temperatures[i];
+	}
+
+	float value = (temp / heatMapMax - heatMapMin / (heatMapMax - heatMapMin)); // First we should normalize to a number between 0 and 1
+	const int NUM_COLORS = 5;
+	static float color[NUM_COLORS][4] = { { 0,0,1 },{ 0,1,1 },{ 0,1,0 },{ 1,1,0 },{ 1,0,0 } }; // A static array of 5 colors using {r,g,b} for each.
+
+	int idx1;        // |-- Our desired color will be between these two indexes in "color".
+	int idx2;        // |
+	float fractBetween = 0;  // Fraction between "idx1" and "idx2" where our value is.
+
+	if (value <= 0) { idx1 = idx2 = 0; }    // accounts for an input <=0
+	else if (value >= 1) { idx1 = idx2 = NUM_COLORS - 1; }    // accounts for an input >=1
+	else
+	{
+		value = value * (NUM_COLORS - 1);       // Will multiply value by number of colors used - 1..
+		idx1 = floor(value);					// Our desired color will be after this index.
+		idx2 = idx1 + 1;                        // ... and before this index (inclusive).
+		fractBetween = value - float(idx1);		// Distance between the two indexes (0-1).
+	}
+
+	*red = (color[idx2][0] - color[idx1][0])*fractBetween + color[idx1][0];
+	*green = (color[idx2][1] - color[idx1][1])*fractBetween + color[idx1][1];
+	*blue = (color[idx2][2] - color[idx1][2])*fractBetween + color[idx1][2];
+}
+
 void Brakes::DrawIcon()
 {
 	RECT size = { 0, 0, 64, 64 };
 	D3DCOLOR color = 0xFFFFFFFF;
 
-	if (!(tempFL < threshold && tempFR < threshold && tempRL < threshold && tempRR < threshold))
-		color = 0xFFFF0000;
+	if (useHeatMap)
+	{
+		float r,g,b;
+		getHeatMapColor(&r, &g, &b);
+		color = D3DCOLOR_COLORVALUE(r, g, b, 1);
+	}
 
 	iconSprite->Begin(D3DXSPRITE_ALPHABLEND);
 	iconSprite->Draw(iconTexture, &size, NULL, &position, color);

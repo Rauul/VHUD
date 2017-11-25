@@ -21,6 +21,7 @@ public:
 	void UpdatePosition();
 	void Draw(bool inEditMode);
 	void DrawBox(bool inEditMode);
+	void getHeatMapColor(float *red, float *green, float *blue);
 	void DrawIcon();
 	void DrawTxt();
 	long RoundNum(long num, long multiple);
@@ -39,10 +40,12 @@ public:
 	double tempFR = 0.00;
 	double tempRL = 0.00;
 	double tempRR = 0.00;
-	double threshold = 1000;
+	double heatMapMin = 0;
+	double heatMapMax = 1000;
 	bool useBorder = true;
 	bool enabled = true;
 	bool showWear = true;
+	bool useHeatMap = true;
 
 private:
 };
