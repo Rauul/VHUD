@@ -790,6 +790,7 @@ void VHUD::LoadConfig(const char * ini_file)
 	fpsWidget.enabled = GetPrivateProfileInt("FPS", "Enabled", true, ini_file);
 	fpsWidget.position.x = (int)GetPrivateProfileInt("FPS", "PosX", 0, ini_file) + screenCenter;
 	fpsWidget.position.y = GetPrivateProfileInt("FPS", "PosY", fpsWidget.position.y, ini_file);
+	fpsWidget.warning = GetPrivateProfileInt("FPS", "Warning", 60, ini_file);
 
 
 	// [StartingLights]

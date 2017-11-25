@@ -148,12 +148,12 @@ void FPSMeter::DrawBox(bool inEditMode)
 
 void FPSMeter::DrawTxt()
 {
-	D3DCOLOR color = 0xFFFFFFFF;
+	D3DCOLOR color = fps >= warning ? 0xFFFFFFFF : 0xFFFF0000;
 	RECT pos;
 	pos.left = position.x;
 	pos.top = position.y;
-	pos.right = pos.left + 64;
-	pos.bottom = pos.top + 65;
+	pos.right = pos.left + size.right;
+	pos.bottom = pos.top + size.bottom;
 	char text[32] = "";
 
 	sprintf(text, "%i", fps);

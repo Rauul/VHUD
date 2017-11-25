@@ -24,7 +24,7 @@ public:
 	void DrawTxt();
 	long RoundNum(long num, long multiple);
 
-	RECT size = { 0, 0, 64, 65 };
+	RECT size = { 0, 0, 64, 32 };
 	D3DXVECTOR3 position = { 0, 950, 0 };
 	D3DCOLOR backgroundColor = 0xFF000000;
 	D3DCOLOR borderColor = 0xFFAAAAAA;
@@ -37,6 +37,7 @@ public:
 	DWORD startTime = GetTickCount();
 	int fps = 0;
 	int frames = 0;
+	int warning = 60;
 	bool useBorder = true;
 	bool enabled = true;
 };
