@@ -189,12 +189,16 @@ void Fuel::Update(const ScoringInfoV01 & info)
 
 	//Calculate fuel needed to finish
 	fuelNeededToFinish = 0;
+	fullTanksNeeded = 0;
 	if (laps > 0 && (info.mVehicle[playerSlot].mBestLapTime > 0 || bestLapLastSession > 0))
 	{
 		double avgFuelConsumption = total / laps;
 
 		if (info.mMaxLaps > 999999)
-			fuelNeededToFinish = (avgFuelConsumption / info.mVehicle[playerSlot].mBestLapTime * (info.mEndET - info.mCurrentET)) - quantity + avgFuelConsumption;
+			if (info.mVehicle[playerSlot].mBestLapTime > 0)
+				fuelNeededToFinish = (avgFuelConsumption / info.mVehicle[playerSlot].mBestLapTime * (info.mEndET - info.mCurrentET)) - quantity + avgFuelConsumption;
+			else
+				fuelNeededToFinish = (avgFuelConsumption / bestLapLastSession * (info.mEndET - info.mCurrentET)) - quantity + avgFuelConsumption;
 		else
 			fuelNeededToFinish = (info.mMaxLaps - (info.mVehicle[playerSlot].mTotalLaps + (info.mVehicle[playerSlot].mLapDist / info.mLapDist))) * avgFuelConsumption - quantity;
 
